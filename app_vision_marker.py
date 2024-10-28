@@ -1,26 +1,35 @@
 
 import random
 
-markers_num = [
-    rm_define.cond_recognized_marker_number_two,
-    rm_define.cond_recognized_marker_number_three,
-    rm_define.cond_recognized_marker_number_five,
-]
+# markers_num = [
+#     rm_define.cond_recognized_marker_number_two,
+#     rm_define.cond_recognized_marker_number_three,
+#     rm_define.cond_recognized_marker_number_five,
+# ]
+
+# media_ctrl.play_sound(rm_define.media_custom_audio_0, wait_for_complete_flag=True)
+# media_ctrl.play_sound(rm_define.media_custom_audio_1, wait_for_complete_flag=True)
+# media_ctrl.play_sound(rm_define.media_custom_audio_2, wait_for_complete_flag=True)
+# media_ctrl.play_sound(rm_define.media_custom_audio_3, wait_for_complete_flag=True)
+# media_ctrl.play_sound(rm_define.media_custom_audio_4, wait_for_complete_flag=True)
+# media_ctrl.play_sound(rm_define.media_custom_audio_5, wait_for_complete_flag=True)
 
 markers_num_dict = {
-    rm_define.cond_recognized_marker_number_two: 'audio_file_two.mp3',
-    rm_define.cond_recognized_marker_number_three: 'audio_file_three.mp3',
-    rm_define.cond_recognized_marker_number_five: 'audio_file_five.mp3',
+    rm_define.cond_recognized_marker_number_two: rm_define.media_custom_audio_4, # 4
+    rm_define.cond_recognized_marker_number_three: rm_define.media_custom_audio_0, # 0
+    rm_define.cond_recognized_marker_number_five: rm_define.media_custom_audio_3, # 3
 }
 
-marker_letter = [
-    rm_define.cond_recognized_marker_letter_M,
-    rm_define.cond_recognized_marker_letter_S,
-]
+# marker_letter = [
+#     rm_define.cond_recognized_marker_letter_M, # 5
+#     rm_define.cond_recognized_marker_letter_S, # 1
+# ]
+
+## simon says = 2
 
 marker_letter_dict = {
-    rm_define.cond_recognized_marker_letter_M: 'audio_file_M.mp3',
-    rm_define.cond_recognized_marker_letter_S: 'audio_file_S.mp3',
+    rm_define.cond_recognized_marker_letter_M: rm_define.media_custom_audio_5,
+    rm_define.cond_recognized_marker_letter_S: rm_define.media_custom_audio_1,
 }
 
 
@@ -63,6 +72,9 @@ def start():
 
     # constantly running
     while True: 
+        audio = markers_num_dict[marker]
+        media_ctrl.play_sound(audio, wait_for_complete_flag=True)
+        time.sleep(10)
         if vision_ctrl.check_condition(marker):
             # led light changes to orange
             led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 161, 255, 69, rm_define.effect_always_on)
