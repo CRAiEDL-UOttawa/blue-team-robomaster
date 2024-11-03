@@ -51,7 +51,7 @@ def start():
             rmexit()
         else:
             if tools.timer_current() > 10:
-            led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 255, 0, 0, rm_define.effect_always_on)
+                led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 255, 0, 0, rm_define.effect_always_on)
             for count in range(5):
                 shoot_one_lazer()
             rmexit()
