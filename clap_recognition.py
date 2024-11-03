@@ -10,7 +10,8 @@ def start():
     media_ctrl.enable_sound_recognition(rm_define.sound_detection_applause)
     while True:
         media_ctrl.play_sound(audio, wait_for_complete_flag=True)
-        time.sleep(10)
+        # timer
+        tools.timer_ctrl(rm_define.timer_start)
         if media_ctrl.check_condition(rm_define.cond_sound_recognized_applause_thrice):
             # led light changes to orange
             led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 161, 255, 69, rm_define.effect_always_on)
@@ -19,6 +20,8 @@ def start():
             chassis_ctrl.move_with_distance(0,1)
             # put audio here
         else:
-            time.sleep(10)
-            led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 255, 0, 0, rm_define.effect_always_on)
-            shoot_one_lazer()
+            if tools.timer_current() > 10:
+                led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 255, 0, 0, rm_define.effect_always_on)
+            for count in range(5):
+                shoot_one_lazer()
+            rmexit()
