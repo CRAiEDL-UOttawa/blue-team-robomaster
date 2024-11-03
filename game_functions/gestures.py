@@ -63,7 +63,6 @@ def start():
 		media_ctrl.play_sound(selected_audio)
 
 		tools.timer_ctrl(rm_define.timer_start)
-		# Audio to add while detecting
 
 		if vision_ctrl.check_condition(selected_pose):			
 			media_ctrl.play_sound(rm_define.media_sound_recognize_success, wait_for_complete=True)
