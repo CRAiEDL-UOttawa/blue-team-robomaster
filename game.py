@@ -13,7 +13,7 @@ def start():
 
 		# Says simon says each action in a loop
 		if(gameLoopCounter<0):
-			media_ctrl.play_sound(rm_define.media_custom_audio_3,wait_for_complete_flag=True)
+			media_ctrl.play_sound("SIMON SAYS AUDIO",wait_for_complete_flag=True)
 			gameLoopCounter+=1
 
 		# CODE TO RANDOMLY SELECT
