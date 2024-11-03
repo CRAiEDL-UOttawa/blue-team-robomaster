@@ -23,9 +23,6 @@ def shoot_one_lazer():
     media_ctrl.play_sound(rm_define.media_sound_shoot)
 
 def start():
-    # timer
-    tools.timer_ctrl(rm_define.timer_start)
-
     # vision detection enabled
     led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 255, 50, 0, rm_define.effect_always_on)
     vision_ctrl.enable_detection(rm_define.vision_detection_marker)
@@ -43,6 +40,8 @@ def start():
 
         audio = markers_num_dict[marker]
         media_ctrl.play_sound(audio, wait_for_complete_flag=True)
+        # timer
+        tools.timer_ctrl(rm_define.timer_start)
         if vision_ctrl.check_condition(marker):
             # led light changes to orange
             led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 161, 255, 69, rm_define.effect_always_on)
