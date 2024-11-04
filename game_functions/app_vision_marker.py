@@ -7,14 +7,6 @@ markers_num_dict = {
     rm_define.cond_recognized_marker_number_five: rm_define.media_custom_audio_3, 
 }
 
-marker_letter_dict = {
-    rm_define.cond_recognized_marker_letter_M: rm_define.media_custom_audio_5,
-    rm_define.cond_recognized_marker_letter_S: rm_define.media_custom_audio_1,
-}
-
-# list of all marker dictionaries
-marker_dicts = [markers_num_dict, marker_letter_dict]
-
 # shoot lazer out
 def shoot_one_lazer():
     led_ctrl.gun_led_on()
@@ -32,11 +24,8 @@ def start():
 
     # constantly running
     while True: 
-        # select one dict out of all of them
-        selected_dict = random.choice(marker_dicts)
-
         # select one key in dict
-        marker = random.choice(list(selected_dict.keys()))
+        marker = random.choice(list(markers_num_dict.keys()))
 
         audio = markers_num_dict[marker]
         media_ctrl.play_sound(audio, wait_for_complete_flag=True)
@@ -48,10 +37,9 @@ def start():
             media_ctrl.play_sound(rm_define.media_sound_recognize_success, wait_for_complete=True)
             # robot moves forward by 1 meter
             chassis_ctrl.move_with_distance(0,1)
-            rmexit()
+             
         else:
             if tools.timer_current() > 10:
                 led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 255, 0, 0, rm_define.effect_always_on)
             for count in range(5):
                 shoot_one_lazer()
-            rmexit()
