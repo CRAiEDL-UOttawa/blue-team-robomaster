@@ -29,7 +29,7 @@ def happy_sound(x): # x -> amount of times you want the happy sound to play
       media_ctrl.play_sound(rm_define.media_sound_solmization_2B)
       media_ctrl.play_sound(rm_define.media_sound_solmization_3C)
 
-def angry_sound(x) # x -> amount of times you want the sad sound to play
+def angry_sound(x): # x -> amount of times you want the sad sound to play
       media_ctrl.play_sound(rm_define.media_sound_solmization_1E)
       media_ctrl.play_sound(rm_define.media_sound_solmization_1B)
       ## need to make this more evil
