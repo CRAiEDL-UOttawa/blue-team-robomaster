@@ -1,4 +1,4 @@
-def shoot_lazer(x): # x -> amount of times you want the countdown sound to play
+def shoot_lazer(x): # x -> amount of times you want to shoot
     for count in range(x):
         # turn gun light on
         led_ctrl.gun_led_on()
