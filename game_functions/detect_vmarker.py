@@ -13,7 +13,7 @@ def shoot_one_lazer():
     led_ctrl.gun_led_off()
     media_ctrl.play_sound(rm_define.media_sound_shoot)
 
-def detect_vmarker(vmarker, simon_says:bool):
+def detect_vmarker(vmarker, simon_says:bool, round_time):
     # Set camera exposure to low for better detection
     media_ctrl.exposure_value_update(rm_define.exposure_value_small)
 
@@ -23,31 +23,36 @@ def detect_vmarker(vmarker, simon_says:bool):
     # timer
     tools.timer_ctrl(rm_define.timer_start)
 
-    # If vmarker is detected
-    if vision_ctrl.check_condition(vmarker_cmd):
+    while tools.timer_current() < round_time:
 
-        # If Simon didn't say, player loses
-        if not simon_says:
-            shoot_one_lazer()
+        # If vmarker is detected
+        if vision_ctrl.check_condition(vmarker_cmd):
 
-        # led light changes to orange
-        led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 161, 255, 69, rm_define.effect_always_on)
-        media_ctrl.play_sound(rm_define.media_sound_recognize_success, wait_for_complete=True)
-        # robot moves forward by 1 meter
-        chassis_ctrl.move_with_distance(0,1)
-             
-    else:
-        # If timer runs out and Simon didn't say
-        if tools.timer_current() > 10 & (not simon_says):
-            # TODO - What occurs when vmarker not detected and simon didn't say
-            pass
-
-        # If timer runs out and Simon did say
-        elif tools.timer_current() > 10:
-            led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 255, 0, 0, rm_define.effect_always_on)
+            # If Simon didn't say, player loses
+            if simon_says:
+                # led light changes to green
+                led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 0, 255, 0, rm_define.effect_always_on)
+                media_ctrl.play_sound(rm_define.media_sound_recognize_success, wait_for_complete=True)
+                # robot moves forward by 1 meter
             
-        for count in range(5):
+            else:
+                led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 255, 0, 0, rm_define.effect_always_on)
+                shoot_one_lazer()
+    
+
+        # Timer ended, no vmarker detected
+        # Simon didn't say... (win)
+        if tools.timer_current() > 10 & (not simon_says):
+            led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 0, 255, 0, rm_define.effect_always_on)
+
+        # Simon did say... (lose)
+        elif tools.timer_current() > 10:
+            
+            led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 255, 0, 0, rm_define.effect_always_on)
+            # TODO - What occurs when vmarker not detected and simon didn't say
             shoot_one_lazer()
+    
+    tools.timer_ctrl(rm_define.timer_reset)
 
 def start():
     #TODO find optimal camera settings for identification in regards to game area
