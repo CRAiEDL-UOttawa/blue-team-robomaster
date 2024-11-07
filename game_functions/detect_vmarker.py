@@ -5,7 +5,7 @@ vmarker_af = ['AUDIO1', 'AUDIO2', 'AUDIO3']
 vmarker = [2,3,5]
 
 # Dictionary makes command calls easier
-vmarker_dict = {2:'rm_define.cond_recognized_marker_number_two', 3: 'rm_define.cond_recognized_marker_number_three', 5:'rm_define.cond_recognized_marker_number_five'}
+vmarker_dict = {2:rm_define.cond_recognized_marker_number_two, 3: rm_define.cond_recognized_marker_number_three, 5:rm_define.cond_recognized_marker_number_five}
         
 def shoot_one_lazer():
     led_ctrl.gun_led_on()
