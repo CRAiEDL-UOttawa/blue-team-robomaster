@@ -6,7 +6,7 @@ gesture_af = ['AUDIO1', 'AUDIO2', 'AUDIO3', 'AUDIO4', 'AUDIO5']
 gesture = ['two_clap', 'three_clap', 'capture', 'hands_up', 'hands_down']
 
 # Robomaster command dict makes calling correct gesture easier (i hope)
-gesture_dict = {'two_clap': 'rm_define.cond_sound_recognized_applause_twice', 'three_clap': 'rm_define.cond_sound_recognized_applause_thrice', 'capture': 'rm_define.cond_recognized_pose_capture', 'hands_up': 'rm_define.cond_recognized_pose_victory', 'hands_down': 'rm_define.cond_recognized_pose_give_in'}
+gesture_dict = {'two_clap': rm_define.cond_sound_recognized_applause_twice, 'three_clap': rm_define.cond_sound_recognized_applause_thrice, 'capture': rm_define.cond_recognized_pose_capture, 'hands_up': rm_define.cond_recognized_pose_victory, 'hands_down': rm_define.cond_recognized_pose_give_in}
 
 def shoot_one_lazer():
     led_ctrl.gun_led_on()
