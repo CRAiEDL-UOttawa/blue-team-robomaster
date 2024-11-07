@@ -7,12 +7,23 @@ markers_num_dict = {
     rm_define.cond_recognized_marker_number_five: rm_define.media_custom_audio_3, 
 }
 
-# shoot lazer out
-def shoot_one_lazer():
-    led_ctrl.gun_led_on()
-    ir_blaster_ctrl.fire_once()
-    led_ctrl.gun_led_off()
-    media_ctrl.play_sound(rm_define.media_sound_shoot)
+def shoot_lazer(x): # x -> amount of times you want to shoot
+    for count in range(x):
+        # turn gun light on
+        led_ctrl.gun_led_on()
+
+        # fire lazer
+        ir_blaster_ctrl.fire_once()
+
+        # turn gun light off
+        led_ctrl.gun_led_off()
+
+        # play shoot sound once (audio.py)
+        shoot_sound(1)
+
+def success_sound(x): # x -> amount of times you want the success sound to play
+        for count in range(x):
+            media_ctrl.play_sound(rm_define.media_sound_recognize_success, wait_for_complete=True)
 
 def start():
     # vision detection enabled
@@ -29,17 +40,22 @@ def start():
 
         audio = markers_num_dict[marker]
         media_ctrl.play_sound(audio, wait_for_complete_flag=True)
+
         # timer
         tools.timer_ctrl(rm_define.timer_start)
-        if vision_ctrl.check_condition(marker):
-            # led light changes to orange
-            led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 161, 255, 69, rm_define.effect_always_on)
-            media_ctrl.play_sound(rm_define.media_sound_recognize_success, wait_for_complete=True)
-            # robot moves forward by 1 meter
-            chassis_ctrl.move_with_distance(0,1)
+
+        win = False
+
+        while tools.timer_current() < 10:
+            
+            if vision_ctrl.check_condition(marker):
+                # led light changes to orange
+                led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 161, 255, 69, rm_define.effect_always_on)
+                success_sound(1)
+                win = True
              
-        else:
-            if tools.timer_current() > 10:
+            if win == False:
                 led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 255, 0, 0, rm_define.effect_always_on)
-            for count in range(5):
-                shoot_one_lazer()
+                shoot_lazer(5)
+
+        tools.timer_ctrl(rm_define.timer_reset) 
