@@ -1,12 +1,12 @@
 import random
 
-vmarker_af = ['AUDIO1', 'AUDIO2', 'AUDIO3']
+vmarker_af = [rm_define.media_custom_audio_7,rm_define.media_custom_audio_4 , rm_define.media_custom_audio_8]
 vmarker = [2,3,5]
 
 # Dictionary makes command calls easier
 vmarker_dict = {2:rm_define.cond_recognized_marker_number_two, 3: rm_define.cond_recognized_marker_number_three, 5:rm_define.cond_recognized_marker_number_five}
         
-gesture_af = ['AUDIO1', 'AUDIO2', 'AUDIO3', 'AUDIO4', 'AUDIO5']
+gesture_af = [rm_define.media_custom_audio_5, rm_define.media_custom_audio_6, rm_define.media_custom_audio_3, rm_define.media_custom_audio_1, rm_define.media_custom_audio_0]
 gesture = ['two_clap', 'three_clap', 'capture', 'hands_up', 'hands_down']
 
 # Robomaster command dict makes calling correct gesture easier (i hope)
@@ -80,8 +80,10 @@ def detect_gesture(gesture, simon_says:bool, round_time):
                 # robot moves forward by 1 meter
                 chassis_ctrl.move_with_distance(0,1)
                 # put audio here
+                print('YAY') 
 
             else:
+                print("lose loser")
                 led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 255, 0, 0, rm_define.effect_always_on)
                 shoot_one_lazer()
 
@@ -90,10 +92,12 @@ def detect_gesture(gesture, simon_says:bool, round_time):
     if tools.timer_current() > 10 & (not simon_says):
         # TODO - What occurs when player doesn't react and simon didn't say
         led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 0, 255, 0, rm_define.effect_always_on)
+        print('huge win')
         
     
     # Simon did say... (lose)
     else:
+        print('you lose')
         led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 255, 0, 0, rm_define.effect_always_on)
         shoot_one_lazer()
 
@@ -107,8 +111,11 @@ def start():
     # INTRO SCENE
 
     gamefunction = [detect_vmarker,detect_gesture]
+    media_ctrl.enable_sound_recognition(rm_define.sound_detection_applause)
+    vision_ctrl.enable_detection(rm_define.vision_detection_marker)
+    vision_ctrl.enable_detection(rm_define.vision_detection_pose)
 
-
+    print('begin game')
     # GAME LOOP
     
     
@@ -117,7 +124,7 @@ def start():
         simonSays = random.randint(0,1)
 
         if simonSays:
-            media_ctrl.play_sound(rm_define.media_custom_audio_SIMONSAYS, wait_for_complete_flag=True)
+            media_ctrl.play_sound(rm_define.media_custom_audio_2, wait_for_complete_flag=True)
         
 
         gf = random.randint(0,1)      
