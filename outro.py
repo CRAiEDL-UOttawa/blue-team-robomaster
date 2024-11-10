@@ -61,11 +61,13 @@ def spin():
      chassis_ctrl.set_rotate_speed(500)
      gimbal_ctrl.set_rotate_speed(150)
      chassis_ctrl.rotate(rm_define.clockwise)
-     gimbal_ctrl.rotate(rm_define.gimbal_left)
+     for count in range(20):
+        gimbal_ctrl.rotate(rm_define.gimbal_left)
+        gimbal_ctrl.rotate(rm_define.gimbal_right)
 
 
 def start():
-    #media_ctrl.play_sound(rm_define.media_custom_audio_4, wait_for_complete_flag=True)
+    media_ctrl.play_sound(rm_define.media_custom_audio_0, wait_for_complete_flag=True)
     scanning_sound(1)
     armor_ctrl.set_hit_sensitivity(9)
 
@@ -79,9 +81,9 @@ def start():
             
             tools.timer_ctrl(rm_define.timer_start)
             
-            while tools.timer_current() < 20:
+            while tools.timer_current() < 5:
                 spin()
-                scanning_sound(1)
+                media_ctrl.play_sound(rm_define.media_custom_audio_0, wait_for_complete_flag=True)
             
             # movement of robot going crazy
             while 20 < tools.timer_current() < 40:
