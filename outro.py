@@ -34,7 +34,7 @@ def drift_indefinitely():
         chassis_ctrl.set_trans_speed(1.5)
         chassis_ctrl.set_rotate_speed(180)
         chassis_ctrl.move_with_time(0,0.5)
-        shoot_lazer(70)
+        shoot_lazer(1)
         chassis_ctrl.move_and_rotate(90, rm_define.anticlockwise)
         time.sleep(1)
 
@@ -67,6 +67,9 @@ def start():
                 spin()
                 media_ctrl.play_sound(rm_define.media_custom_audio_1, wait_for_complete_flag=True)
             
+
+            tools.timer_ctrl(rm_define.timer_reset) 
+
             # movement of robot going crazy
-            while tools.timer_current() >= 6:
+            while tools.timer_current() < 8:
                 drift_indefinitely()
