@@ -1,21 +1,3 @@
-
-RGB=[
-    [255,0,0], # red
-    [255,255,0], # yellow
-    [0,0,255], # blue
-    [0,255,0], # green
-    [255,0,150], # pink
-    [224,0,255], # magenta
-    [100,0,100], # purple
-    [36,103,255], #blue
-    [69,215,255], # cyan
-    [0,127,70], # green
-    [161,255,69], # lime
-    [255,193,0], # yellow
-    [255,50,0], # orange
-    [255,255,255], # white
-]
-
 def angry_sound(x): # x -> amount of times you want the sad sound to play
       media_ctrl.play_sound(rm_define.media_sound_solmization_1E)
       media_ctrl.play_sound(rm_define.media_sound_solmization_1B)
@@ -57,11 +39,11 @@ def drift_indefinitely():
         time.sleep(1)
 
 def spin():
-     robot_ctrl.set_mode(rm_define.robot_mode_free)
-     chassis_ctrl.set_rotate_speed(500)
-     gimbal_ctrl.set_rotate_speed(150)
-     chassis_ctrl.rotate(rm_define.clockwise)
-     for count in range(20):
+    robot_ctrl.set_mode(rm_define.robot_mode_free)
+    chassis_ctrl.set_rotate_speed(500)
+    gimbal_ctrl.set_rotate_speed(150)
+    chassis_ctrl.rotate(rm_define.clockwise)
+    for count in range(2):
         gimbal_ctrl.rotate(rm_define.gimbal_left)
         gimbal_ctrl.rotate(rm_define.gimbal_right)
 
@@ -83,8 +65,8 @@ def start():
             
             while tools.timer_current() < 5:
                 spin()
-                media_ctrl.play_sound(rm_define.media_custom_audio_0, wait_for_complete_flag=True)
+                media_ctrl.play_sound(rm_define.media_custom_audio_1, wait_for_complete_flag=True)
             
             # movement of robot going crazy
-            while 20 < tools.timer_current() < 40:
+            while tools.timer_current() >= 6:
                 drift_indefinitely()
