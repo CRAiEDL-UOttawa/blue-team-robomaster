@@ -57,17 +57,17 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time):
                 shoot_one_lazer()
     
 
-        # Timer ended, no vmarker detected
-        # Simon didn't say... (win)
-        if tools.timer_current() > 10 & (not simon_says):
-            led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 0, 255, 0, rm_define.effect_always_on)
+    # Timer ended, no vmarker detected
+    # Simon didn't say... (win)
+    if tools.timer_current() > 10 & (not simon_says):
+        led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 0, 255, 0, rm_define.effect_always_on)
 
-        # Simon did say... (lose)
-        elif tools.timer_current() > 10:
-            
-            led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 255, 0, 0, rm_define.effect_always_on)
-            # TODO - What occurs when vmarker not detected and simon didn't say
-            shoot_one_lazer()
+    # Simon did say... (lose)
+    else:
+        
+        led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 255, 0, 0, rm_define.effect_always_on)
+        # TODO - What occurs when vmarker not detected and simon didn't say
+        shoot_one_lazer()
     
     tools.timer_ctrl(rm_define.timer_reset)
 
