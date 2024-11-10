@@ -122,7 +122,6 @@ def start():
     print('game start')
     # INTRO SCENE
 
-    gamefunction = [detect_vmarker,detect_gesture]
     media_ctrl.enable_sound_recognition(rm_define.sound_detection_applause)
     vision_ctrl.enable_detection(rm_define.vision_detection_marker)
     vision_ctrl.enable_detection(rm_define.vision_detection_pose)
