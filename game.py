@@ -36,7 +36,8 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time):
 
     # Get robomaster call from dict
     gestureOrvmarker_cmd = actions_dict.get(action)
-
+    print(gestureOrvmarker_cmd)
+    
     # timer
     tools.timer_ctrl(rm_define.timer_start)
 
@@ -59,7 +60,7 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time):
 
     # Timer ended, no vmarker detected
     # Simon didn't say... (win)
-    if tools.timer_current() > 10 & (not simon_says):
+    if not simon_says:
         led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 0, 255, 0, rm_define.effect_always_on)
 
     # Simon did say... (lose)
@@ -75,7 +76,7 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time):
 def detect_claps(clap, simon_says:bool, round_time):
 
     clap_cmd = actions_dict.get(clap)
-
+    print(clap_cmd)
     # timer
     tools.timer_ctrl(rm_define.timer_start)
 
@@ -101,7 +102,7 @@ def detect_claps(clap, simon_says:bool, round_time):
 
     # Timer ended, no clap detected
     # Simon didn't say... (win)
-    if tools.timer_current() > 10 & (not simon_says):
+    if not simon_says:
         # TODO - What occurs when player doesn't react and simon didn't say
         led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 0, 255, 0, rm_define.effect_always_on)
         print('huge win')
