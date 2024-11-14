@@ -26,13 +26,13 @@ LED_Effects = {
 }
 
 # Arrays of audio files corresponding to specific actions within our game and arrays containing those actions
-claps_af = [rm_define.media_custom_audio_5, rm_define.media_custom_audio_6] 
+claps_af = [rm_define.media_custom_audio_2, rm_define.media_custom_audio_1] 
 claps = ['two_clap', 'three_clap'] 
 
-vmarker_af = [rm_define.media_custom_audio_7,rm_define.media_custom_audio_4 , rm_define.media_custom_audio_8]
-vmarker = [2,3,5]
+vmarker_af = [rm_define.media_custom_audio_5,rm_define.media_custom_audio_8 , rm_define.media_custom_audio_9,rm_define.media_custom_audio_7]
+vmarker = [3,3,5,5]
 
-gesture_af = [rm_define.media_custom_audio_3, rm_define.media_custom_audio_1, rm_define.media_custom_audio_0]
+gesture_af = [rm_define.media_custom_audio_3, rm_define.media_custom_audio_4, rm_define.media_custom_audio_0]
 gesture = ['capture', 'hands_up', 'hands_down']
 
 # Dictionary makes command calls easier
@@ -58,7 +58,7 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time,isGesture):
     # Set camera exposure to low for better detection
     
     if(isGesture):
-        media_ctrl.exposure_value_update(rm_define.exposure_value_medium)
+        media_ctrl.exposure_value_update(rm_define.exposure_value_large)
     else:
         media_ctrl.exposure_value_update(rm_define.exposure_value_small)
 
@@ -73,6 +73,8 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time,isGesture):
 
     while tools.timer_current() < round_time:
 
+        detected = True
+        
         # If vmarker is detected
         if vision_ctrl.check_condition(gestureOrvmarker_cmd):
 
@@ -85,7 +87,6 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time,isGesture):
             else:
                 set_led_color("red", "red", "solid")
                 shoot_one_lazer()
-                detected = True
     
 
     # Timer ended, no vmarker detected
@@ -95,7 +96,7 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time,isGesture):
         media_ctrl.play_sound(rm_define.media_sound_recognize_success, wait_for_complete=True)
 
     # Simon did say... (lose)
-    else:
+    elif simon_says and not detected:
         set_led_color("red", "red", "solid")
         shoot_one_lazer()
     
@@ -114,6 +115,8 @@ def detect_claps(clap, simon_says:bool, round_time):
 
     while tools.timer_current() < round_time:
 
+        detected = True
+        
         # If specified clap is observed
         if media_ctrl.check_condition(clap_cmd):
 
@@ -127,7 +130,7 @@ def detect_claps(clap, simon_says:bool, round_time):
                 print("lose loser")
                 set_led_color("red", "red", "solid")
                 shoot_one_lazer()
-                detected = True
+                
                 
 
     # Timer ended, no clap detected
@@ -139,7 +142,7 @@ def detect_claps(clap, simon_says:bool, round_time):
         
     
     # Simon did say... (lose)
-    else:
+    elif simon_says and not detected:
         set_led_color("red", "red", "solid")
         shoot_one_lazer()
 
@@ -194,6 +197,7 @@ def start():
     media_ctrl.enable_sound_recognition(rm_define.sound_detection_applause)
     vision_ctrl.enable_detection(rm_define.vision_detection_marker)
     vision_ctrl.enable_detection(rm_define.vision_detection_pose)
+    gimbal_ctrl.rotate(rm_define.gimbal_up)
 
     print('begin game')
     # GAME LOOP
@@ -223,13 +227,13 @@ def start():
             
             if level==1:
                 set_led_color("white", "white", "pulsing")
-                media_ctrl.play_sound(rm_define.media_custom_audio_2, wait_for_complete_flag=True)
+                media_ctrl.play_sound(rm_define.media_custom_audio_6, wait_for_complete_flag=True)
             elif level==2:
                 set_led_color("cyan", "cyan", "pulsing")
-                media_ctrl.play_sound(rm_define.media_custom_audio_2, wait_for_complete_flag=True)
+                media_ctrl.play_sound(rm_define.media_custom_audio_6, wait_for_complete_flag=True)
             elif level==3:
                 set_led_color("purple", "purple", "pulsing")
-                media_ctrl.play_sound(rm_define.media_custom_audio_2, wait_for_complete_flag=True)
+                media_ctrl.play_sound(rm_define.media_custom_audio_6, wait_for_complete_flag=True)
 
         gf = random.randint(0,2)  
         
@@ -254,16 +258,5 @@ def start():
             selected_clap = claps[selected_index]
             media_ctrl.play_sound(selected_audio, wait_for_complete_flag=True)
             detect_claps(selected_clap, simonSays, round_time)
-
-            
-          
-        
-
-
-
-
-
-        
-
 
     # EXIT SCENE
