@@ -18,10 +18,11 @@ RGB = {
 }
 
 LED_Effects = {
-    'pulsing': rm_define.effect_breath,
-    'scanning': rm_define.effect_marquee,
-    'flashing': rm_define.effect_flash,
-    'solid': rm_define.effect_always_on
+    'pulsing': 2,
+    'scanning': 4,
+    'flashing': 3,
+    'solid': 0,
+    'off': 1
 }
 
 # Arrays of audio files corresponding to specific actions within our game and arrays containing those actions
@@ -53,13 +54,19 @@ def shoot_one_lazer():
     led_ctrl.gun_led_off()
     media_ctrl.play_sound(rm_define.media_sound_shoot)
 
-def detect_gesture_vmarker(action, simon_says:bool, round_time):
+def detect_gesture_vmarker(action, simon_says:bool, round_time,isGesture):
     # Set camera exposure to low for better detection
-    media_ctrl.exposure_value_update(rm_define.exposure_value_small)
+    
+    if(isGesture):
+        media_ctrl.exposure_value_update(rm_define.exposure_value_medium)
+    else:
+        media_ctrl.exposure_value_update(rm_define.exposure_value_small)
 
     # Get robomaster call from dict
     gestureOrvmarker_cmd = actions_dict.get(action)
     print(gestureOrvmarker_cmd)
+    
+    detected = False
     
     # timer
     tools.timer_ctrl(rm_define.timer_start)
@@ -78,12 +85,14 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time):
             else:
                 set_led_color("red", "red", "solid")
                 shoot_one_lazer()
+                detected = True
     
 
     # Timer ended, no vmarker detected
     # Simon didn't say... (win)
-    if not simon_says:
+    if not simon_says and not detected:
         set_led_color("green", "green", "solid")
+        media_ctrl.play_sound(rm_define.media_sound_recognize_success, wait_for_complete=True)
 
     # Simon did say... (lose)
     else:
@@ -98,6 +107,8 @@ def detect_claps(clap, simon_says:bool, round_time):
     clap_cmd = actions_dict.get(clap)
     print(clap_cmd)
 
+    detected = False
+    
     # timer
     tools.timer_ctrl(rm_define.timer_start)
 
@@ -116,12 +127,15 @@ def detect_claps(clap, simon_says:bool, round_time):
                 print("lose loser")
                 set_led_color("red", "red", "solid")
                 shoot_one_lazer()
+                detected = True
+                
 
     # Timer ended, no clap detected
     # Simon didn't say... (win)
-    if not simon_says:
+    if not simon_says and not detected:
         # TODO - What occurs when player doesn't react and simon didn't say
         set_led_color("green", "green", "solid")
+        media_ctrl.play_sound(rm_define.media_sound_recognize_success, wait_for_complete=True)
         
     
     # Simon did say... (lose)
@@ -151,9 +165,12 @@ def set_led_color(top_color, bottom_color, effect):
     if bottom_rgb is None:
         raise ValueError(f"Bottom color '{bottom_color}' not found.")
     
-    # set the top and bottom LEDs 
-    led_ctrl.set_top_led(rm_define.armor_top_all, top_rgb[0], top_rgb[1], top_rgb[2], effect_color)
-    led_ctrl.set_bottom_led(rm_define.armor_bottom_all, bottom_rgb[0], bottom_rgb[1], bottom_rgb[2], effect_color)
+    if effect=="scanning":
+        led_ctrl.set_top_led(rm_define.armor_top_all, top_rgb[0], top_rgb[1], top_rgb[2], effect_color)
+    else:
+        # set the top and bottom LEDs 
+        led_ctrl.set_top_led(rm_define.armor_top_all, top_rgb[0], top_rgb[1], top_rgb[2], effect_color)
+        led_ctrl.set_bottom_led(rm_define.armor_bottom_all, bottom_rgb[0], bottom_rgb[1], bottom_rgb[2], effect_color)
 
 
 # using user's 2 arrays
@@ -224,13 +241,13 @@ def start():
             selected_index = gesture_af.index(selected_audio)
             selected_pose = gesture[selected_index]
             media_ctrl.play_sound(selected_audio, wait_for_complete_flag=True)
-            detect_gesture_vmarker(selected_pose, simonSays, round_time)
+            detect_gesture_vmarker(selected_pose, simonSays, round_time,True)
         elif gf==1:
             selected_audio = random.choice(vmarker_af)
-            selected_index = vmarker_af.index(selected_audio,level)
+            selected_index = vmarker_af.index(selected_audio)
             selected_marker = vmarker[selected_index]
             media_ctrl.play_sound(selected_audio, wait_for_complete_flag=True)
-            detect_gesture_vmarker(selected_marker, simonSays, round_time)
+            detect_gesture_vmarker(selected_marker, simonSays, round_time,False)
         else:
             selected_audio = random.choice(claps_af)
             selected_index = claps_af.index(selected_audio)
