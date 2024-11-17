@@ -97,7 +97,9 @@ def turn_180_left():
 def back_and_forth_pacing():
         # gimbal follow
         robot_ctrl.set_mode(rm_define.robot_mode_gimbal_follow)
+        
         chassis_ctrl.set_trans_speed(0.5)
+       
         # make robot 'come to life'
         # set robot pitch
         gimbal_ctrl.pitch_ctrl(5)
