@@ -65,7 +65,7 @@ def start():
             variable_Post = 0.05
 
             # When Person is identified, and vision is within error, move towards person
-            if abs(variable_X - 0.5) <= variable_Post and abs(0.5 - variable_X) <= variable_Post:
+            if abs(variable_X - 0.5) <= variable_Post and abs(0.5 - variable_Y) <= variable_Post:
                 chassis_ctrl.move(0)
                 led_ctrl.gun_led_on()
                 gun_ctrl.fire_once()
