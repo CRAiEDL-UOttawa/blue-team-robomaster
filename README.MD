@@ -1,19 +1,18 @@
 # CRAiDL Blue Team Honours Project Repository
 
 ## Current Tasks
-- Investigate SD card code from Chantal
 - Realized final concept by November 20, 2024
-- Comb through code and add additional comments
-    - Maybe have verbose commands/references to [this repo?](https://github.com/Robomaster-S1-Python-Examples/ROBOMASTER-S1-Python-Examples)
 - Work through additional features
     - PID controller
         - Info pass-off
-        - In house documentation would be useful (Michael can get on that)
+        - In house documentation would be useful ([found here](https://docs.google.com/document/d/1E2vtN8Vh4QIOrHv-F-w_r5o-GoFp36QvDXOF40xpHxg/edit?usp=sharing)
         - <em>Line Follower<em>
-        - <em>Person Follower<em>
+        - <em>Person Follower<em> [DEMO DONE]
     - Arduino/RPi fitting to Robomaster S1 PWM ports
         - See if these ports can be leveraged for extra function
     - Any additional functions we may have passed over?
+- Comb through code and add additional comments
+    - Maybe have verbose commands/references to [this repo?](https://github.com/Robomaster-S1-Python-Examples/ROBOMASTER-S1-Python-Examples)
 - Continue to fill in 'Robomaster Project Documentation'
     - Emphasis on documentating limitations encountered
 
