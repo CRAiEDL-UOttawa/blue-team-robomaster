@@ -146,7 +146,7 @@ def back_and_forth_pacing():
         set_led_color("red", "red", rm_define.effect_always_on) #check this to fix it
         turn_90_right()
         chassis_ctrl.move_with_time(0,3)
-
+        # make sure it pointing in the right direction
         
 
 def start():
