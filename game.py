@@ -47,6 +47,10 @@ actions_dict = {
     5: rm_define.cond_recognized_marker_number_five
 }       
 
+# Initialize array of players
+# 1 -> PLAYER ALIVE
+# 0 -> PLAYER DEAD
+players = [1,1,1,1,1]
 
 def shoot_one_lazer():
     led_ctrl.gun_led_on()
@@ -54,11 +58,11 @@ def shoot_one_lazer():
     led_ctrl.gun_led_off()
     media_ctrl.play_sound(rm_define.media_sound_shoot)
 
-def detect_gesture_vmarker(action, simon_says:bool, round_time,isGesture):
+def detect_gesture_vmarker(action, simon_says:bool, round_time,isGesture,round_number):
     # Set camera exposure to low for better detection
     
     if(isGesture):
-        media_ctrl.exposure_value_update(rm_define.exposure_value_large)
+        media_ctrl.exposure_value_update(rm_define.exposure_value_medium)
     else:
         media_ctrl.exposure_value_update(rm_define.exposure_value_small)
 
@@ -66,6 +70,7 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time,isGesture):
     gestureOrvmarker_cmd = actions_dict.get(action)
     print(gestureOrvmarker_cmd)
     
+    # Flag that indicates vision detection
     detected = False
     
     # timer
@@ -87,6 +92,8 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time,isGesture):
             else:
                 set_led_color("red", "red", "solid")
                 shoot_one_lazer()
+                # Find the correct player and set them to 0 (dead)
+                players[round_number%5]=0
     
 
     # Timer ended, no vmarker detected
@@ -99,11 +106,12 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time,isGesture):
     elif simon_says and not detected:
         set_led_color("red", "red", "solid")
         shoot_one_lazer()
+        players[round_number%5]=0
     
     tools.timer_ctrl(rm_define.timer_reset)
 
 # Where 'clap' is one of the several keys in 'actions_dict'
-def detect_claps(clap, simon_says:bool, round_time):
+def detect_claps(clap, simon_says:bool, round_time,round_number):
 
     clap_cmd = actions_dict.get(clap)
     print(clap_cmd)
@@ -130,6 +138,8 @@ def detect_claps(clap, simon_says:bool, round_time):
                 print("lose loser")
                 set_led_color("red", "red", "solid")
                 shoot_one_lazer()
+                # Find the correct player and set them to 0 (dead)
+                players[round_number%5]=0  
                 
                 
 
@@ -145,7 +155,8 @@ def detect_claps(clap, simon_says:bool, round_time):
     elif simon_says and not detected:
         set_led_color("red", "red", "solid")
         shoot_one_lazer()
-
+        # Find the correct player and set them to 0 (dead)
+        players[round_number%5]=0
 
     tools.timer_ctrl(rm_define.timer_reset)
 
@@ -203,25 +214,28 @@ def start():
     # GAME LOOP
     
     
-    for i in range(0,10):
+    for i in range(0,20):
+        
+        # Play audio to call up next player
+        media_ctrl.play_sound(rm_define.media_custom_audio_0, wait_for_complete_flag=True)
     
         simonSays = random.randint(0,1)
         print('starting level 1')
         level = 1
         color = "yellow"
-        round_time = 10
+        round_time = 15
         
-        if i==5:
+        if i==10:
             print("starting level 2")
             level=2
             color = "orange"
-            round_time = 7
+            round_time = 10
             
-        if i==7:
+        if i==5:
             print("starting level 3")
             level=3
             color = "red"
-            round_time = 4
+            round_time = 5
 
         if simonSays:
             
@@ -245,18 +259,24 @@ def start():
             selected_index = gesture_af.index(selected_audio)
             selected_pose = gesture[selected_index]
             media_ctrl.play_sound(selected_audio, wait_for_complete_flag=True)
-            detect_gesture_vmarker(selected_pose, simonSays, round_time,True)
+            detect_gesture_vmarker(selected_pose, simonSays, round_time,True,i)
         elif gf==1:
             selected_audio = random.choice(vmarker_af)
             selected_index = vmarker_af.index(selected_audio)
             selected_marker = vmarker[selected_index]
             media_ctrl.play_sound(selected_audio, wait_for_complete_flag=True)
-            detect_gesture_vmarker(selected_marker, simonSays, round_time,False)
+            detect_gesture_vmarker(selected_marker, simonSays, round_time,False,i)
         else:
             selected_audio = random.choice(claps_af)
             selected_index = claps_af.index(selected_audio)
             selected_clap = claps[selected_index]
             media_ctrl.play_sound(selected_audio, wait_for_complete_flag=True)
-            detect_claps(selected_clap, simonSays, round_time)
+            detect_claps(selected_clap, simonSays, round_time,i)
 
-    # EXIT SCENE
+        # EXIT SCENE
+        if(players.count(1)==1):
+            # High five function and conclusion
+            print()
+        
+        
+    
