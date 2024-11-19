@@ -100,8 +100,8 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time,isGesture,round_n
             
             else:
                 set_led_color("red", "red", "solid")
-                #shoot_one_lazer()
-                detect_and_shoot_person()
+                shoot_one_lazer()
+                #detect_and_shoot_person()
                 # Find the correct player and set them to 0 (dead)
                 players[round_number%5]=0
     
@@ -115,8 +115,8 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time,isGesture,round_n
     # Simon did say... (lose)
     elif simon_says and not detected:
         set_led_color("red", "red", "solid")
-        #shoot_one_lazer()
-        detect_and_shoot_person()
+        shoot_one_lazer()
+        #detect_and_shoot_person()
         players[round_number%5]=0
     
     tools.timer_ctrl(rm_define.timer_reset)
@@ -148,7 +148,7 @@ def detect_claps(clap, simon_says:bool, round_time,round_number):
             else:
                 print("lose loser")
                 set_led_color("red", "red", "solid")
-                #shoot_one_lazer()
+                shoot_one_lazer()
                 detect_and_shoot_person()
                 # Find the correct player and set them to 0 (dead)
                 players[round_number%5]=0  
@@ -166,7 +166,7 @@ def detect_claps(clap, simon_says:bool, round_time,round_number):
     # Simon did say... (lose)
     elif simon_says and not detected:
         set_led_color("red", "red", "solid")
-        #shoot_one_lazer()
+        shoot_one_lazer()
         detect_and_shoot_person()
         # Find the correct player and set them to 0 (dead)
         players[round_number%5]=0
@@ -228,6 +228,7 @@ def detect_person():
     # Set error threshold (called the Post) to 0.07
     variable_Post = 0.07
     robot_ctrl.set_mode(rm_define.robot_mode_chassis_follow) 
+    #correction_threshold = 0
 
     while True:
         led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 100, 0, 100, rm_define.effect_always_on)
@@ -257,6 +258,7 @@ def detect_person():
             # If the gimbal is fixed on an individual, and x,y values are within the threshold
             if abs(variable_X - 0.5) <= variable_Post and abs(0.5 - variable_Y) <= variable_Post:
                 print("person detected")
+                gimbal_ctrl.stop()
                 return True
         
         # If no person is identified, gimbal will rotate right until an individual is found
@@ -351,7 +353,10 @@ def start():
     
     
     for i in range(0,20):
+        # Ask person to come forward
         media_ctrl.play_sound(rm_define.media_custom_audio_2, wait_for_complete_flag=True)
+        
+        # Dete
         detect_person()
         
 
@@ -367,7 +372,7 @@ def start():
             color = "orange"
             round_time = 10
             
-        if i==5:
+        if i==15:
             print("starting level 3")
             level=3
             color = "red"
