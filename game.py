@@ -66,6 +66,29 @@ def shoot_one_lazer():
     ir_blaster_ctrl.fire_once()
     led_ctrl.gun_led_off()
     media_ctrl.play_sound(rm_define.media_sound_shoot)
+    
+def alive_sound(x): # x -> amount of times you want the sad sound to play
+      media_ctrl.play_sound(rm_define.media_sound_solmization_1E)
+      media_ctrl.play_sound(rm_define.media_sound_solmization_1B)
+      ## need to make this more evil
+
+def angry_sound(x): # x -> amount of times you want the sad sound to play
+      media_ctrl.play_sound(rm_define.media_sound_solmization_1E)
+      media_ctrl.play_sound(rm_define.media_sound_solmization_1B)
+      ## need to make this more evil
+
+def scanning_sound(x): # x -> amount of times you want the scanning sound to play
+        for count in range(x):
+            media_ctrl.play_sound(rm_define.media_sound_scanning, wait_for_complete=True)
+
+def attacked_sound(x): # x -> amount of times you want the attacked sound to play
+        for count in range(x):
+            media_ctrl.play_sound(rm_define.media_sound_attacked, wait_for_complete=True)
+
+def turn_90_right():
+    robot_ctrl.set_mode(rm_define.robot_mode_gimbal_follow)
+    chassis_ctrl.rotate_with_speed(rm_define.clockwise,90)
+    time.sleep(1)
 
 def detect_gesture_vmarker(action, simon_says:bool, round_time,isGesture,round_number):
     # Set camera exposure to low for better detection
@@ -338,7 +361,73 @@ def detect_and_shoot_person():
             chassis_ctrl.stop()
             gimbal_ctrl.rotate(rm_define.gimbal_right)  
 
+def intro_placement():
+        # gimbal follow
+        robot_ctrl.set_mode(rm_define.robot_mode_gimbal_follow)
+        
+        chassis_ctrl.set_trans_speed(0.5)
+       
+        # make robot 'come to life'
+        # set robot pitch
+        gimbal_ctrl.pitch_ctrl(5)
+        alive_sound(1)
+        gimbal_ctrl.pitch_ctrl(0)
+        # add sound effect
+        alive_sound(2)
+        gimbal_ctrl.pitch_ctrl(10)
+        set_led_color("magenta", "magenta", rm_define.effect_breath) #check this to fix it
+
+        # move into game area
+        chassis_ctrl.move_with_distance(0,1)
+
+        # rotate right and move forward
+        turn_90_right()
+        media_ctrl.play_sound(rm_define.media_custom_audio_0)
+        chassis_ctrl.move_with_time(0,3)
+
+        # recenter gimbal
+        gimbal_ctrl.recenter()
+
+# Outro functions
+def drift_indefinitely():
+    while True:
+        chassis_ctrl.set_trans_speed(3.5)
+        chassis_ctrl.set_rotate_speed(180)
+        chassis_ctrl.move_with_time(0,0.5)
+        shoot_lazer(1)
+        chassis_ctrl.move_and_rotate(90, rm_define.anticlockwise)
+        time.sleep(0.5)
+
+def spin():
+    robot_ctrl.set_mode(rm_define.robot_mode_free)
+    chassis_ctrl.set_rotate_speed(500)
+    gimbal_ctrl.set_rotate_speed(150)
+    obliteration_colouring("red", "cyan", "green", "magenta", "purple", "orange")
+    chassis_ctrl.rotate(rm_define.clockwise)
+    for count in range(2):
+        gimbal_ctrl.rotate(rm_define.gimbal_left)
+        gimbal_ctrl.rotate(rm_define.gimbal_right)
+
+
+# move to lights file as well
+def obliteration_colouring(x1, x2, x3, x4, x5, x6):
+    c1 = RGB.get(x1)
+    c2 = RGB.get(x2)
+    c3 = RGB.get(x3)
+    c4 = RGB.get(x4)
+    c5 = RGB.get(x5)
+    c6 = RGB.get(x6)
+    led_ctrl.set_top_led(rm_define.armor_top_left, c1[0], c1[1], c1[2], rm_define.effect_flash) # left gimbal
+    led_ctrl.set_top_led(rm_define.armor_top_right, c2[0], c2[1], c2[2], rm_define.effect_flash)  # right gimbal
+
+    led_ctrl.set_bottom_led(rm_define.armor_bottom_front, c3[0], c3[1], c3[2], rm_define.effect_flash) # front chassis
+    led_ctrl.set_bottom_led(rm_define.armor_bottom_back, c4[0], c4[1], c4[2], rm_define.effect_flash) # rear chassis
+    led_ctrl.set_bottom_led(rm_define.armor_bottom_left, c5[0], c5[1], c5[2], rm_define.effect_flash) # left chassis
+    led_ctrl.set_bottom_led(rm_define.armor_bottom_right, c6[0], c6[1], c6[2], rm_define.effect_flash) # right chassis
+
 def start():
+    #(INTRO ADDED YESTERDAY)
+    intro_placement()
     print('game start')
     # INTRO SCENE
 
@@ -414,10 +503,29 @@ def start():
             media_ctrl.play_sound(selected_audio, wait_for_complete_flag=True)
             detect_claps(selected_clap, simonSays, round_time,i)
 
-        # EXIT SCENE
+        # EXIT SCENE (OUTRO ADDED YESTERDAY)
         if(players.count(1)==1):
-            # High five function and conclusion
-            print()
+             set_led_color("green", "green", rm_define.effect_breath)
+             scanning_sound(1)
+             media_ctrl.play_sound(rm_define.media_custom_audio_1, wait_for_complete_flag=True)
+             chassis_ctrl.move_with_distance(0, 0.5)
+             armor_ctrl.set_hit_sensitivity(10)
+             while True:
+                  if armor_ctrl.check_condition(rm_define.cond_armor_bottom_front_hit):
+                         set_led_color("red", "red", rm_define.effect_breath)
+                         attacked_sound(1)
+                         angry_sound(2)
+                         tools.timer_ctrl(rm_define.timer_start)
+                         while tools.timer_current() < 5:
+                                   spin()
+                                   media_ctrl.play_sound(rm_define.media_custom_audio_2, wait_for_complete_flag=True)
+                         tools.timer_ctrl(rm_define.timer_reset) 
+                         while tools.timer_current() < 8: 
+                              drift_indefinitely()
+            
+
+			
+    
         
         
     
