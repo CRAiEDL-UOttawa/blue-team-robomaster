@@ -35,16 +35,18 @@ variable_W = 0
 variable_H = 0
 
 # Arrays of audio files corresponding to specific actions within our game and arrays containing those actions
-claps_af = [rm_define.media_custom_audio_2, rm_define.media_custom_audio_1] 
+claps_af = [rm_define.media_custom_audio_5, rm_define.media_custom_audio_2] 
 claps = ['two_clap', 'three_clap'] 
 
-vmarker_af = [rm_define.media_custom_audio_5,rm_define.media_custom_audio_8 , rm_define.media_custom_audio_9,rm_define.media_custom_audio_7]
-vmarker = [3,3,5,5]
+# vmarker_af = [rm_define.media_custom_audio_5,rm_define.media_custom_audio_8 , rm_define.media_custom_audio_9,rm_define.media_custom_audio_7]
+# vmarker = [3,3,5,5]
 
-gesture_af = [rm_define.media_custom_audio_3, rm_define.media_custom_audio_4, rm_define.media_custom_audio_0]
-gesture = ['capture', 'hands_up', 'hands_down']
+gesture_af = [rm_define.media_custom_audio_0, rm_define.media_custom_audio_3]
+gesture = ['hands_up', 'hands_down']
 
-intro_outro_audios = ["PUT NEXT PLAYER AUDIO HERE","PUT CONLUSION AUDIO 1 HERE","PUT CONCLUSION AUDIO 2 HERE"]
+intro_outro_audios = [rm_define.media_custom_audio_8,rm_define.media_custom_audio_6,rm_define.media_custom_audio_7]
+
+run_audio = [rm_define.media_custom_audio_4]
 # Dictionary makes command calls easier
 actions_dict = {
     'two_clap': rm_define.cond_sound_recognized_applause_twice,
@@ -123,7 +125,7 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time,isGesture,round_n
             
             else:
                 set_led_color("red", "red", "solid")
-                media_ctrl.play_sound("RUN", wait_for_complete=True)
+                media_ctrl.play_sound(run_audio[0], wait_for_complete=True)
                 detect_and_shoot_person()
                 # Find the correct player and set them to 0 (dead)
                 players[round_number%5]=0
@@ -132,7 +134,7 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time,isGesture,round_n
     # Simon did say... (lose)
     if simon_says and not detected:
         set_led_color("red", "red", "solid")
-        media_ctrl.play_sound("RUN", wait_for_complete=True)
+        media_ctrl.play_sound(run_audio[0], wait_for_complete=True)
         detect_and_shoot_person()
         players[round_number%5]=0
         return 0
@@ -171,7 +173,7 @@ def detect_claps(clap, simon_says:bool, round_time,round_number):
             else:
                 print("lose loser")
                 set_led_color("red", "red", "solid")
-                media_ctrl.play_sound("RUN", wait_for_complete=True)
+                media_ctrl.play_sound(run_audio[0], wait_for_complete=True)
                 detect_and_shoot_person()
                 # Find the correct player and set them to 0 (dead)
                 players[round_number%5]=0  
@@ -180,7 +182,7 @@ def detect_claps(clap, simon_says:bool, round_time,round_number):
     # Simon did say... (lose)
     if simon_says and not detected:
         set_led_color("red", "red", "solid")
-        media_ctrl.play_sound("RUN", wait_for_complete=True)
+        media_ctrl.play_sound(run_audio[0], wait_for_complete=True)
         detect_and_shoot_person()
         # Find the correct player and set them to 0 (dead)
         players[round_number%5]=0
@@ -450,7 +452,7 @@ def start():
         # Currently playing note C
         
         # Change this to intro_outro_audios[0]
-        media_ctrl.play_sound(rm_define.media_sound_solmization_1C)
+        media_ctrl.play_sound(intro_outro_audios[0])
         
         # Sleep for 5 seconds after asking for next player
         time.sleep(5)
@@ -485,13 +487,13 @@ def start():
             
             if level==1:
                 set_led_color("white", "white", "pulsing")
-                media_ctrl.play_sound(rm_define.media_custom_audio_6, wait_for_complete_flag=True)
+                media_ctrl.play_sound(rm_define.media_custom_audio_1, wait_for_complete_flag=True)
             elif level==2:
                 set_led_color("cyan", "cyan", "pulsing")
-                media_ctrl.play_sound(rm_define.media_custom_audio_6, wait_for_complete_flag=True)
+                media_ctrl.play_sound(rm_define.media_custom_audio_1, wait_for_complete_flag=True)
             elif level==3:
                 set_led_color("purple", "purple", "pulsing")
-                media_ctrl.play_sound(rm_define.media_custom_audio_6, wait_for_complete_flag=True)
+                media_ctrl.play_sound(rm_define.media_custom_audio_1, wait_for_complete_flag=True)
 
         gf = random.randint(0,1)  
         
@@ -521,8 +523,7 @@ def start():
         if(players.count(1)==1):
             set_led_color("green", "green", "pulsing")
             scanning_sound(1)
-            # Change this to intro_outro_audios[1]
-            media_ctrl.play_sound(rm_define.media_custom_audio_1, wait_for_complete_flag=True)
+            media_ctrl.play_sound(intro_outro_audios[1], wait_for_complete_flag=True)
             chassis_ctrl.move_with_distance(0, 0.5)
             armor_ctrl.set_hit_sensitivity(10)
             while True:
@@ -533,8 +534,7 @@ def start():
                     tools.timer_ctrl(rm_define.timer_start)
                     while tools.timer_current() < 5:
                         spin()
-                        # Change this to intro_outro_audios[2]
-                        media_ctrl.play_sound(rm_define.media_custom_audio_2, wait_for_complete_flag=True)
+                        media_ctrl.play_sound(intro_outro_audios[2], wait_for_complete_flag=True)
                     tools.timer_ctrl(rm_define.timer_reset) 
                     while tools.timer_current() < 8: 
                         drift_indefinitely()
