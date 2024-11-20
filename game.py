@@ -123,6 +123,7 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time,isGesture,round_n
             
             else:
                 set_led_color("red", "red", "solid")
+                media_ctrl.play_sound("RUN", wait_for_complete=True)
                 detect_and_shoot_person()
                 # Find the correct player and set them to 0 (dead)
                 players[round_number%5]=0
@@ -131,6 +132,7 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time,isGesture,round_n
     # Simon did say... (lose)
     if simon_says and not detected:
         set_led_color("red", "red", "solid")
+        media_ctrl.play_sound("RUN", wait_for_complete=True)
         detect_and_shoot_person()
         players[round_number%5]=0
         return 0
@@ -169,6 +171,7 @@ def detect_claps(clap, simon_says:bool, round_time,round_number):
             else:
                 print("lose loser")
                 set_led_color("red", "red", "solid")
+                media_ctrl.play_sound("RUN", wait_for_complete=True)
                 detect_and_shoot_person()
                 # Find the correct player and set them to 0 (dead)
                 players[round_number%5]=0  
@@ -177,6 +180,7 @@ def detect_claps(clap, simon_says:bool, round_time,round_number):
     # Simon did say... (lose)
     if simon_says and not detected:
         set_led_color("red", "red", "solid")
+        media_ctrl.play_sound("RUN", wait_for_complete=True)
         detect_and_shoot_person()
         # Find the correct player and set them to 0 (dead)
         players[round_number%5]=0
