@@ -44,6 +44,7 @@ vmarker = [3,3,5,5]
 gesture_af = [rm_define.media_custom_audio_3, rm_define.media_custom_audio_4, rm_define.media_custom_audio_0]
 gesture = ['capture', 'hands_up', 'hands_down']
 
+intro_outro_audios = ["PUT NEXT PLAYER AUDIO HERE","PUT CONLUSION AUDIO 1 HERE","PUT CONCLUSION AUDIO 2 HERE"]
 # Dictionary makes command calls easier
 actions_dict = {
     'two_clap': rm_define.cond_sound_recognized_applause_twice,
@@ -101,7 +102,6 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time,isGesture,round_n
     # Get robomaster call from dict
     gestureOrvmarker_cmd = actions_dict.get(action)
     print(gestureOrvmarker_cmd)
-    
     # Flag that indicates vision detection
     detected = False
     
@@ -109,12 +109,12 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time,isGesture,round_n
     tools.timer_ctrl(rm_define.timer_start)
 
     while tools.timer_current() < round_time:
-
-        detected = True
         
         # If vmarker is detected
         if vision_ctrl.check_condition(gestureOrvmarker_cmd):
-
+            
+            detected = True
+            
             # If Simon didn't say, player loses
             if simon_says:
                 # led light changes to green
@@ -123,24 +123,23 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time,isGesture,round_n
             
             else:
                 set_led_color("red", "red", "solid")
-                shoot_one_lazer()
-                #detect_and_shoot_person()
+                detect_and_shoot_person()
                 # Find the correct player and set them to 0 (dead)
                 players[round_number%5]=0
-    
-
-    # Timer ended, no vmarker detected
-    # Simon didn't say... (win)
-    if not simon_says and not detected:
-        set_led_color("green", "green", "solid")
-        media_ctrl.play_sound(rm_define.media_sound_recognize_success, wait_for_complete=True)
+                return 0
 
     # Simon did say... (lose)
-    elif simon_says and not detected:
+    if simon_says and not detected:
         set_led_color("red", "red", "solid")
-        shoot_one_lazer()
-        #detect_and_shoot_person()
+        detect_and_shoot_person()
         players[round_number%5]=0
+        return 0
+    
+    # Timer ended, no vmarker detected
+    # Simon didn't say... (win)
+    elif not simon_says and not detected:
+        set_led_color("green", "green", "solid")
+        media_ctrl.play_sound(rm_define.media_sound_recognize_success, wait_for_complete=True)
     
     tools.timer_ctrl(rm_define.timer_reset)
 
@@ -149,7 +148,6 @@ def detect_claps(clap, simon_says:bool, round_time,round_number):
 
     clap_cmd = actions_dict.get(clap)
     print(clap_cmd)
-
     detected = False
     
     # timer
@@ -157,11 +155,11 @@ def detect_claps(clap, simon_says:bool, round_time,round_number):
 
     while tools.timer_current() < round_time:
 
-        detected = True
-        
         # If specified clap is observed
         if media_ctrl.check_condition(clap_cmd):
 
+            detected = True
+            
             # If simon did not say, player loses
             if simon_says:
                 # led light changes to orange
@@ -171,28 +169,26 @@ def detect_claps(clap, simon_says:bool, round_time,round_number):
             else:
                 print("lose loser")
                 set_led_color("red", "red", "solid")
-                shoot_one_lazer()
                 detect_and_shoot_person()
                 # Find the correct player and set them to 0 (dead)
                 players[round_number%5]=0  
+                return 0           
                 
-                
-
+    # Simon did say... (lose)
+    if simon_says and not detected:
+        set_led_color("red", "red", "solid")
+        detect_and_shoot_person()
+        # Find the correct player and set them to 0 (dead)
+        players[round_number%5]=0
+        return 0
+    
     # Timer ended, no clap detected
     # Simon didn't say... (win)
-    if not simon_says and not detected:
+    elif not simon_says and not detected:
         # TODO - What occurs when player doesn't react and simon didn't say
         set_led_color("green", "green", "solid")
         media_ctrl.play_sound(rm_define.media_sound_recognize_success, wait_for_complete=True)
         
-    
-    # Simon did say... (lose)
-    elif simon_says and not detected:
-        set_led_color("red", "red", "solid")
-        shoot_one_lazer()
-        detect_and_shoot_person()
-        # Find the correct player and set them to 0 (dead)
-        players[round_number%5]=0
 
     tools.timer_ctrl(rm_define.timer_reset)
 
@@ -205,9 +201,6 @@ def set_led_color(top_color, bottom_color, effect):
     bottom_rgb = RGB.get(bottom_color)
     
     effect_color = LED_Effects.get(effect)
-    print(actions_dict.get('two_clap'))
-    print(effect_color)
-    print(top_rgb)
     
     # check if both colors exist in dictionary
     if top_rgb is None:
@@ -250,8 +243,7 @@ def detect_person():
     pid_PIDpitch.set_ctrl_params(85,5,3)
     # Set error threshold (called the Post) to 0.07
     variable_Post = 0.07
-    robot_ctrl.set_mode(rm_define.robot_mode_chassis_follow) 
-    #correction_threshold = 0
+    robot_ctrl.set_mode(rm_define.robot_mode_chassis_follow)
 
     while True:
         led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 100, 0, 100, rm_define.effect_always_on)
@@ -281,15 +273,18 @@ def detect_person():
             # If the gimbal is fixed on an individual, and x,y values are within the threshold
             if abs(variable_X - 0.5) <= variable_Post and abs(0.5 - variable_Y) <= variable_Post:
                 print("person detected")
-                gimbal_ctrl.stop()
-                return True
+                gimbal_ctrl.rotate_with_speed(0, 0)  # Stop gimbal rotation
+                gimbal_ctrl.stop()  # Ensure gimbal stops moving
+                chassis_ctrl.stop()  # Ensure chassis stops moving
+                break
         
         # If no person is identified, gimbal will rotate right until an individual is found
         # TODO - maybe implement a more effective way to search for a person
         else:
             gimbal_ctrl.rotate_with_speed(0,0)
             chassis_ctrl.stop()
-            gimbal_ctrl.rotate(rm_define.gimbal_right)  
+            gimbal_ctrl.rotate(rm_define.gimbal_right)
+            gimbal_ctrl.stop()  
             
 def detect_and_shoot_person():
         # init variables
@@ -306,8 +301,11 @@ def detect_and_shoot_person():
     # Set error threshold (called the Post) to 0.07
     variable_Post = 0.07
     robot_ctrl.set_mode(rm_define.robot_mode_chassis_follow) 
+    
+    tools.timer_ctrl(rm_define.timer_reset)
+    tools.timer_ctrl(rm_define.timer_start)
 
-    while True:
+    while tools.timer_current() < 5:
         led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 100, 0, 100, rm_define.effect_always_on)
         led_ctrl.set_top_led(rm_define.armor_top_all, 100, 0, 100, rm_define.effect_always_on)
 
@@ -343,16 +341,13 @@ def detect_and_shoot_person():
 
                 # Else, set chassis to translate to the player until the if statement above is executed
                 else:
-                    tools.timer_ctrl(rm_define.timer_start)
-                    while (tools.timer_current() < 5):
-                        led_ctrl.set_top_led(rm_define.armor_top_all, 0, 127, 70, rm_define.effect_always_on)
-                        chassis_ctrl.set_trans_speed(0.2) # WE SET SLOW SPEED FOR TESTING, THIS CAN BE BUMPED UP (PLEASE HAVE A BIG PLAY AREA IF YOU USE A HIGH VALUE)
-                        chassis_ctrl.move(0)
-                        led_ctrl.gun_led_on()
-                        gun_ctrl.fire_once()
-                        media_ctrl.play_sound(rm_define.media_sound_shoot)
-                        led_ctrl.gun_led_off()
-                        return True
+                    led_ctrl.set_top_led(rm_define.armor_top_all, 0, 127, 70, rm_define.effect_always_on)
+                    chassis_ctrl.set_trans_speed(0.2) # WE SET SLOW SPEED FOR TESTING, THIS CAN BE BUMPED UP (PLEASE HAVE A BIG PLAY AREA IF YOU USE A HIGH VALUE)
+                    chassis_ctrl.move(0)
+                    led_ctrl.gun_led_on()
+                    gun_ctrl.fire_once()
+                    media_ctrl.play_sound(rm_define.media_sound_shoot)
+                    led_ctrl.gun_led_off()                      
         
         # If no person is identified, gimbal will rotate right until an individual is found
         # TODO - maybe implement a more effective way to search for a person
@@ -360,6 +355,12 @@ def detect_and_shoot_person():
             gimbal_ctrl.rotate_with_speed(0,0)
             chassis_ctrl.stop()
             gimbal_ctrl.rotate(rm_define.gimbal_right)  
+    
+    # Stop robot after shooting person
+    gimbal_ctrl.rotate_with_speed(0, 0)  # Stop gimbal rotation
+    gimbal_ctrl.stop()  # Ensure gimbal stops moving
+    chassis_ctrl.stop()  # Ensure chassis stops moving
+    tools.timer_ctrl(rm_define.timer_reset)
 
 def intro_placement():
         # gimbal follow
@@ -394,7 +395,7 @@ def drift_indefinitely():
         chassis_ctrl.set_trans_speed(3.5)
         chassis_ctrl.set_rotate_speed(180)
         chassis_ctrl.move_with_time(0,0.5)
-        shoot_lazer(1)
+        shoot_one_lazer()
         chassis_ctrl.move_and_rotate(90, rm_define.anticlockwise)
         time.sleep(0.5)
 
@@ -427,7 +428,7 @@ def obliteration_colouring(x1, x2, x3, x4, x5, x6):
 
 def start():
     #(INTRO ADDED YESTERDAY)
-    intro_placement()
+    #intro_placement()
     print('game start')
     # INTRO SCENE
 
@@ -443,7 +444,15 @@ def start():
     
     for i in range(0,20):
         # Ask person to come forward
-        media_ctrl.play_sound(rm_define.media_custom_audio_2, wait_for_complete_flag=True)
+        # Currently playing note C
+        
+        # Change this to intro_outro_audios[0]
+        media_ctrl.play_sound(rm_define.media_sound_solmization_1C)
+        
+        # Sleep for 5 seconds after asking for next player
+        # time.sleep(5)
+        
+        print(players)
         
         # Dete
         detect_person()
@@ -479,7 +488,7 @@ def start():
                 set_led_color("purple", "purple", "pulsing")
                 media_ctrl.play_sound(rm_define.media_custom_audio_6, wait_for_complete_flag=True)
 
-        gf = random.randint(0,2)  
+        gf = random.randint(0,1)  
         
         # Scan for action
         set_led_color(color, color, "scanning")    
@@ -490,13 +499,13 @@ def start():
             selected_pose = gesture[selected_index]
             media_ctrl.play_sound(selected_audio, wait_for_complete_flag=True)
             detect_gesture_vmarker(selected_pose, simonSays, round_time,True,i)
-        elif gf==1:
+        elif gf==2:
             selected_audio = random.choice(vmarker_af)
             selected_index = vmarker_af.index(selected_audio)
             selected_marker = vmarker[selected_index]
             media_ctrl.play_sound(selected_audio, wait_for_complete_flag=True)
             detect_gesture_vmarker(selected_marker, simonSays, round_time,False,i)
-        else:
+        elif gf==1:
             selected_audio = random.choice(claps_af)
             selected_index = claps_af.index(selected_audio)
             selected_clap = claps[selected_index]
@@ -505,23 +514,25 @@ def start():
 
         # EXIT SCENE (OUTRO ADDED YESTERDAY)
         if(players.count(1)==1):
-             set_led_color("green", "green", rm_define.effect_breath)
-             scanning_sound(1)
-             media_ctrl.play_sound(rm_define.media_custom_audio_1, wait_for_complete_flag=True)
-             chassis_ctrl.move_with_distance(0, 0.5)
-             armor_ctrl.set_hit_sensitivity(10)
-             while True:
-                  if armor_ctrl.check_condition(rm_define.cond_armor_bottom_front_hit):
-                         set_led_color("red", "red", rm_define.effect_breath)
-                         attacked_sound(1)
-                         angry_sound(2)
-                         tools.timer_ctrl(rm_define.timer_start)
-                         while tools.timer_current() < 5:
-                                   spin()
-                                   media_ctrl.play_sound(rm_define.media_custom_audio_2, wait_for_complete_flag=True)
-                         tools.timer_ctrl(rm_define.timer_reset) 
-                         while tools.timer_current() < 8: 
-                              drift_indefinitely()
+            set_led_color("green", "green", "pulsing")
+            scanning_sound(1)
+            # Change this to intro_outro_audios[1]
+            media_ctrl.play_sound(rm_define.media_custom_audio_1, wait_for_complete_flag=True)
+            chassis_ctrl.move_with_distance(0, 0.5)
+            armor_ctrl.set_hit_sensitivity(10)
+            while True:
+                if armor_ctrl.check_condition(rm_define.cond_armor_bottom_front_hit):
+                    set_led_color("red", "red", "pulsing")
+                    attacked_sound(1)
+                    angry_sound(2)
+                    tools.timer_ctrl(rm_define.timer_start)
+                    while tools.timer_current() < 5:
+                        spin()
+                        # Change this to intro_outro_audios[2]
+                        media_ctrl.play_sound(rm_define.media_custom_audio_2, wait_for_complete_flag=True)
+                    tools.timer_ctrl(rm_define.timer_reset) 
+                    while tools.timer_current() < 8: 
+                        drift_indefinitely()
             
 
 			
