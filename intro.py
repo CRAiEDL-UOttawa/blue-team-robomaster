@@ -53,9 +53,9 @@ def alive_sound(x): # x -> amount of times you want the sad sound to play
       media_ctrl.play_sound(rm_define.media_sound_solmization_1B)
       ## need to make this more evil
 
-def turn_90_right():
+def turn_90_left():
     robot_ctrl.set_mode(rm_define.robot_mode_gimbal_follow)
-    chassis_ctrl.rotate_with_speed(rm_define.clockwise,90)
+    chassis_ctrl.rotate_with_speed(rm_define.anticlockwise,90)
     time.sleep(1)
 
 
@@ -76,18 +76,15 @@ def intro_placement():
         set_led_color("magenta", "magenta", rm_define.effect_breath) #check this to fix it
 
         # move into game area
-        chassis_ctrl.move_with_distance(0,1)
+        chassis_ctrl.move_with_distance(0,2)
 
-        # rotate right and move forward
-        turn_90_right()
-        media_ctrl.play_sound(rm_define.media_custom_audio_0)
-        chassis_ctrl.move_with_time(0,3)
+        # rotate left and move forward
+        turn_90_left()
+        media_ctrl.play_sound(rm_define.media_sound_solmization_1C)
 
         # recenter gimbal
         gimbal_ctrl.recenter()
         
 def start():
-    # timer
-    tools.timer_ctrl(rm_define.timer_start)
     intro_placement()
         

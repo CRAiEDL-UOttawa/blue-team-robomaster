@@ -86,9 +86,9 @@ def attacked_sound(x): # x -> amount of times you want the attacked sound to pla
         for count in range(x):
             media_ctrl.play_sound(rm_define.media_sound_attacked, wait_for_complete=True)
 
-def turn_90_right():
+def turn_90_left():
     robot_ctrl.set_mode(rm_define.robot_mode_gimbal_follow)
-    chassis_ctrl.rotate_with_speed(rm_define.clockwise,90)
+    chassis_ctrl.rotate_with_speed(rm_define.anticlockwise,90)
     time.sleep(1)
 
 def detect_gesture_vmarker(action, simon_says:bool, round_time,isGesture,round_number):
@@ -376,15 +376,14 @@ def intro_placement():
         # add sound effect
         alive_sound(2)
         gimbal_ctrl.pitch_ctrl(10)
-        set_led_color("magenta", "magenta", rm_define.effect_breath) #check this to fix it
+        set_led_color("magenta", "magenta", "pulsing")
 
         # move into game area
-        chassis_ctrl.move_with_distance(0,1)
+        chassis_ctrl.move_with_distance(0,2)
 
-        # rotate right and move forward
-        turn_90_right()
-        media_ctrl.play_sound(rm_define.media_custom_audio_0)
-        chassis_ctrl.move_with_time(0,3)
+        # rotate left and move forward
+        turn_90_left()
+        media_ctrl.play_sound(rm_define.media_sound_solmization_1C)
 
         # recenter gimbal
         gimbal_ctrl.recenter()
@@ -428,7 +427,7 @@ def obliteration_colouring(x1, x2, x3, x4, x5, x6):
 
 def start():
     #(INTRO ADDED YESTERDAY)
-    #intro_placement()
+    intro_placement()
     print('game start')
     # INTRO SCENE
 
@@ -450,13 +449,15 @@ def start():
         media_ctrl.play_sound(rm_define.media_sound_solmization_1C)
         
         # Sleep for 5 seconds after asking for next player
-        # time.sleep(5)
+        time.sleep(5)
         
         print(players)
         
-        # Dete
+        # Use camera to detect person and aim at them
         detect_person()
-        
+        # Stop gimbal and chassis from adjusting after detection
+        gimbal_ctrl.stop()
+        chassis_ctrl.stop()
 
         simonSays = random.randint(0,1)
         print('starting level 1')
