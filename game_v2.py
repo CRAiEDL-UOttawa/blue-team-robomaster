@@ -93,17 +93,17 @@ def countdown_sound(x): # x -> amount of times you want the countdown sound to p
         media_ctrl.play_sound(rm_define.media_sound_count_down, wait_for_complete=True)
 
 def waiting_sound_l1(x):
-      for count in range(x):
+    for count in range(x):
         media_ctrl.play_sound(rm_define.media_sound_solmization_1A)
         time.sleep(1.5)
 
 def waiting_sound_l2(x):
-      for count in range(x):
+    for count in range(x):
         media_ctrl.play_sound(rm_define.media_sound_solmization_1GSharp)
         time.sleep(1.5)
 
 def waiting_sound_l3(x):
-      for count in range(x):
+    for count in range(x):
         media_ctrl.play_sound(rm_define.media_sound_solmization_1F)
         time.sleep(1.5)
 
