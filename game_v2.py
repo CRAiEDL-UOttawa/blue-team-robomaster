@@ -494,7 +494,7 @@ def start():
     # GAME LOOP
     
     roundNumber = 20
-    
+    countdown_sound(1)
     for i in range(roundNumber):
         # Ask person to come forward
         # Currently playing note C
@@ -521,7 +521,6 @@ def start():
 
         simonSays = random.randint(0,1)
         print('starting level 1')
-        countdown_sound(1)
         level = 1
         color = "yellow"
         round_time = 10
@@ -564,13 +563,13 @@ def start():
             selected_index = gesture_af.index(selected_audio)
             selected_pose = gesture[selected_index]
             media_ctrl.play_sound(selected_audio, wait_for_complete_flag=True)
-            detect_gesture_vmarker(selected_pose, simonSays, round_time, level, True,i,playerNumber)
+            detect_gesture_vmarker(selected_pose, simonSays, round_time, level, True,playerNumber)
         elif gf==1:
             selected_audio = random.choice(claps_af)
             selected_index = claps_af.index(selected_audio)
             selected_clap = claps[selected_index]
             media_ctrl.play_sound(selected_audio, wait_for_complete_flag=True)
-            detect_claps(selected_clap, simonSays, round_time, level,i,playerNumber)
+            detect_claps(selected_clap, simonSays, round_time, level,playerNumber)
 
         # EXIT SCENE (OUTRO ADDED YESTERDAY)
         if players.count(1)==1 or i==roundNumber-1:
