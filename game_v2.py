@@ -95,14 +95,17 @@ def countdown_sound(x): # x -> amount of times you want the countdown sound to p
 def waiting_sound_l1(x):
       for count in range(x):
         media_ctrl.play_sound(rm_define.media_sound_solmization_1A)
+        time.sleep(1.5)
 
 def waiting_sound_l2(x):
       for count in range(x):
         media_ctrl.play_sound(rm_define.media_sound_solmization_1GSharp)
+        time.sleep(1.5)
 
 def waiting_sound_l3(x):
       for count in range(x):
         media_ctrl.play_sound(rm_define.media_sound_solmization_1F)
+        time.sleep(1.5)
 
 def turn_90_left():
     robot_ctrl.set_mode(rm_define.robot_mode_gimbal_follow)
@@ -346,7 +349,8 @@ def detect_and_shoot_person():
     robot_ctrl.set_mode(rm_define.robot_mode_chassis_follow) 
     
     tools.timer_ctrl(rm_define.timer_reset)
-    tools.timer_ctrl(rm_define.timer_start)
+    
+    timer_flag = True
 
     while True:
         led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 100, 0, 100, rm_define.effect_always_on)
@@ -356,7 +360,12 @@ def detect_and_shoot_person():
         list_PersonList=RmList(vision_ctrl.get_marker_detection_info())
         
         # If item 1 of list is equal to 1 - person identified
-        if list_PersonList[1] == 1 and tools.timer_current() < 5:
+        if list_PersonList[1] == 1:
+            
+            if timer_flag:
+                timer_flag = False
+                tools.timer_ctrl(rm_define.timer_start)
+            
             # Set color to state - person identified
             led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 255, 255, 255, rm_define.effect_always_on)
             led_ctrl.set_top_led(rm_define.armor_top_all, 255, 255, 255, rm_define.effect_always_on)
@@ -387,18 +396,22 @@ def detect_and_shoot_person():
                     led_ctrl.set_top_led(rm_define.armor_top_all, 0, 127, 70, rm_define.effect_always_on)
                     chassis_ctrl.set_trans_speed(0.2) # WE SET SLOW SPEED FOR TESTING, THIS CAN BE BUMPED UP (PLEASE HAVE A BIG PLAY AREA IF YOU USE A HIGH VALUE)
                     chassis_ctrl.move(0)
+                    led_ctrl.gun_led_on()
                     gun_ctrl.fire_once()
-                    media_ctrl.play_sound(rm_define.media_sound_shoot)                   
-        
+                    media_ctrl.play_sound(rm_define.media_sound_shoot)
+                    led_ctrl.gun_led_off()
+            if tools.timer_current() > 5:
+                # Stop robot
+                gimbal_ctrl.stop()  # Ensure gimbal stops moving
+                chassis_ctrl.stop()  # Ensure chassis stops moving
+                tools.timer_ctrl(rm_define.timer_reset)
+                return 0
         # If no person is identified, gimbal will rotate right until an individual is found
         # TODO - maybe implement a more effective way to search for a person
         else:
             gimbal_ctrl.rotate_with_speed(0,0)
             chassis_ctrl.stop()
-            gimbal_ctrl.rotate(rm_define.gimbal_right)  
-    
-    # Stop robot after shooting person
-    gimbal_ctrl.rotate_with_speed(0, 0)  # Stop gimbal rotation
+            gimbal_ctrl.rotate(rm_define.gimbal_right)
     
 
 def intro_placement():
@@ -516,7 +529,7 @@ def start():
         # If 2 players died or at round 5
         if players.count(1)==3 or i==5:
             print("starting level 2")
-            countdown_sound(2)
+            countdown_sound(1)
             level = 2
             color = "orange"
             round_time = 7
@@ -524,7 +537,7 @@ def start():
         # If 3 players died or at round 10
         if players.count(1)==2 or i==10:
             print("starting level 3")
-            countdown_sound(3)
+            countdown_sound(1)
             level=3
             color = "red"
             round_time = 5
