@@ -88,12 +88,28 @@ def attacked_sound(x): # x -> amount of times you want the attacked sound to pla
         for count in range(x):
             media_ctrl.play_sound(rm_define.media_sound_attacked, wait_for_complete=True)
 
+def countdown_sound(x): # x -> amount of times you want the countdown sound to play
+    for count in range(x):
+        media_ctrl.play_sound(rm_define.media_sound_count_down, wait_for_complete=True)
+
+def waiting_sound_l1(x):
+      for count in range(x):
+        media_ctrl.play_sound(rm_define.media_sound_solmization_1A)
+
+def waiting_sound_l2(x):
+      for count in range(x):
+        media_ctrl.play_sound(rm_define.media_sound_solmization_1GSharp)
+
+def waiting_sound_l3(x):
+      for count in range(x):
+        media_ctrl.play_sound(rm_define.media_sound_solmization_1F)
+
 def turn_90_left():
     robot_ctrl.set_mode(rm_define.robot_mode_gimbal_follow)
     chassis_ctrl.rotate_with_speed(rm_define.anticlockwise,90)
     time.sleep(1)
 
-def detect_gesture_vmarker(action, simon_says:bool, round_time,isGesture,round_number,playerNumber):
+def detect_gesture_vmarker(action, simon_says:bool, round_time, level, isGesture,playerNumber):
     # Set camera exposure to low for better detection
     
     if(isGesture):
@@ -111,6 +127,12 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time,isGesture,round_n
     tools.timer_ctrl(rm_define.timer_start)
 
     while tools.timer_current() < round_time:
+        if level == 1:
+            waiting_sound_l1(round_time)
+        elif level == 2:
+            waiting_sound_l2(round_time)
+        elif level == 3:
+            waiting_sound_l3(round_time)
         
         # If vmarker is detected
         if vision_ctrl.check_condition(gestureOrvmarker_cmd):
@@ -153,7 +175,7 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time,isGesture,round_n
     tools.timer_ctrl(rm_define.timer_reset)
 
 # Where 'clap' is one of the several keys in 'actions_dict'
-def detect_claps(clap, simon_says:bool, round_time,round_number,playerNumber):
+def detect_claps(clap, simon_says:bool, round_time, level, playerNumber):
 
     clap_cmd = actions_dict.get(clap)
     print(clap_cmd)
@@ -163,7 +185,12 @@ def detect_claps(clap, simon_says:bool, round_time,round_number,playerNumber):
     tools.timer_ctrl(rm_define.timer_start)
 
     while tools.timer_current() < round_time:
-
+        if level == 1:
+            waiting_sound_l1(round_time)
+        elif level == 2:
+            waiting_sound_l2(round_time)
+        elif level == 3:
+            waiting_sound_l3(round_time)
         # If specified clap is observed
         if media_ctrl.check_condition(clap_cmd):
 
@@ -360,10 +387,8 @@ def detect_and_shoot_person():
                     led_ctrl.set_top_led(rm_define.armor_top_all, 0, 127, 70, rm_define.effect_always_on)
                     chassis_ctrl.set_trans_speed(0.2) # WE SET SLOW SPEED FOR TESTING, THIS CAN BE BUMPED UP (PLEASE HAVE A BIG PLAY AREA IF YOU USE A HIGH VALUE)
                     chassis_ctrl.move(0)
-                    led_ctrl.gun_led_on()
                     gun_ctrl.fire_once()
-                    media_ctrl.play_sound(rm_define.media_sound_shoot)
-                    led_ctrl.gun_led_off()                      
+                    media_ctrl.play_sound(rm_define.media_sound_shoot)                   
         
         # If no person is identified, gimbal will rotate right until an individual is found
         # TODO - maybe implement a more effective way to search for a person
@@ -483,6 +508,7 @@ def start():
 
         simonSays = random.randint(0,1)
         print('starting level 1')
+        countdown_sound(1)
         level = 1
         color = "yellow"
         round_time = 10
@@ -490,6 +516,7 @@ def start():
         # If 2 players died or at round 5
         if players.count(1)==3 or i==5:
             print("starting level 2")
+            countdown_sound(2)
             level = 2
             color = "orange"
             round_time = 7
@@ -497,6 +524,7 @@ def start():
         # If 3 players died or at round 10
         if players.count(1)==2 or i==10:
             print("starting level 3")
+            countdown_sound(3)
             level=3
             color = "red"
             round_time = 5
@@ -523,13 +551,13 @@ def start():
             selected_index = gesture_af.index(selected_audio)
             selected_pose = gesture[selected_index]
             media_ctrl.play_sound(selected_audio, wait_for_complete_flag=True)
-            detect_gesture_vmarker(selected_pose, simonSays, round_time,True,i,playerNumber)
+            detect_gesture_vmarker(selected_pose, simonSays, round_time, level, True,i,playerNumber)
         elif gf==1:
             selected_audio = random.choice(claps_af)
             selected_index = claps_af.index(selected_audio)
             selected_clap = claps[selected_index]
             media_ctrl.play_sound(selected_audio, wait_for_complete_flag=True)
-            detect_claps(selected_clap, simonSays, round_time,i,playerNumber)
+            detect_claps(selected_clap, simonSays, round_time, level,i,playerNumber)
 
         # EXIT SCENE (OUTRO ADDED YESTERDAY)
         if players.count(1)==1 or i==roundNumber-1:
