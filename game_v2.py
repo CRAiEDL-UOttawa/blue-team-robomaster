@@ -114,7 +114,8 @@ def turn_90_left():
 
 def detect_gesture_vmarker(action, simon_says:bool, round_time, level, isGesture,playerNumber):
     # Set camera exposure to low for better detection
-    
+    vision_ctrl.disable_detection(rm_define.vision_detection_marker)
+    vision_ctrl.enable_detection(rm_define.vision_detection_pose)
     if(isGesture):
         media_ctrl.exposure_value_update(rm_define.exposure_value_medium)
     else:
@@ -148,6 +149,8 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time, level, isGesture
                 set_led_color("green", "green", "solid")
                 media_ctrl.play_sound(rm_define.media_sound_recognize_success, wait_for_complete=True)
                 tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
+                vision_ctrl.disable_detection(rm_define.vision_detection_pose)
+                vision_ctrl.enable_detection(rm_define.vision_detection_marker)
                 return 0
             
             else:
@@ -157,6 +160,8 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time, level, isGesture
                 # Find the correct player and set them to 0 (dead)
                 players[playerNumber]=0
                 tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
+                vision_ctrl.disable_detection(rm_define.vision_detection_pose)
+                vision_ctrl.enable_detection(rm_define.vision_detection_marker)
                 return 0
 
     # Simon did say... (lose)
@@ -166,6 +171,8 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time, level, isGesture
         detect_and_shoot_person()
         players[playerNumber]=0
         tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
+        vision_ctrl.disable_detection(rm_define.vision_detection_pose)
+        vision_ctrl.enable_detection(rm_define.vision_detection_marker)
         return 0
     
     # Timer ended, no vmarker detected
@@ -173,6 +180,8 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time, level, isGesture
     elif not simon_says and not detected:
         set_led_color("green", "green", "solid")
         media_ctrl.play_sound(rm_define.media_sound_recognize_success, wait_for_complete=True)
+        vision_ctrl.disable_detection(rm_define.vision_detection_pose)
+        vision_ctrl.enable_detection(rm_define.vision_detection_marker)
         tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
     
     tools.timer_ctrl(rm_define.timer_reset)
@@ -486,7 +495,6 @@ def start():
     media_ctrl.enable_sound_recognition(rm_define.sound_detection_applause)
     vision_ctrl.enable_detection(rm_define.vision_detection_marker)
     vision_ctrl.enable_detection(rm_define.vision_detection_pose)
-    vision_ctrl.enable_detection(rm_define.vision_detection_people)
     gimbal_ctrl.rotate(rm_define.gimbal_up)
 
 
