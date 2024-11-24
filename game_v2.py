@@ -122,6 +122,8 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time,isGesture,round_n
                 # led light changes to green
                 set_led_color("green", "green", "solid")
                 media_ctrl.play_sound(rm_define.media_sound_recognize_success, wait_for_complete=True)
+                tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
+                return 0
             
             else:
                 set_led_color("red", "red", "solid")
@@ -129,6 +131,7 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time,isGesture,round_n
                 detect_and_shoot_person()
                 # Find the correct player and set them to 0 (dead)
                 players[playerNumber]=0
+                tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
                 return 0
 
     # Simon did say... (lose)
@@ -137,6 +140,7 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time,isGesture,round_n
         media_ctrl.play_sound(run_audio[0], wait_for_complete=True)
         detect_and_shoot_person()
         players[playerNumber]=0
+        tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
         return 0
     
     # Timer ended, no vmarker detected
@@ -144,6 +148,7 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time,isGesture,round_n
     elif not simon_says and not detected:
         set_led_color("green", "green", "solid")
         media_ctrl.play_sound(rm_define.media_sound_recognize_success, wait_for_complete=True)
+        tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
     
     tools.timer_ctrl(rm_define.timer_reset)
 
@@ -169,6 +174,8 @@ def detect_claps(clap, simon_says:bool, round_time,round_number,playerNumber):
                 # led light changes to orange
                 set_led_color("green", "green", "solid")
                 media_ctrl.play_sound(rm_define.media_sound_recognize_success, wait_for_complete=True)
+                tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
+                return 0
 
             else:
                 print("lose loser")
@@ -176,7 +183,8 @@ def detect_claps(clap, simon_says:bool, round_time,round_number,playerNumber):
                 media_ctrl.play_sound(run_audio[0], wait_for_complete=True)
                 detect_and_shoot_person()
                 # Find the correct player and set them to 0 (dead)
-                players[playerNumber]=0  
+                players[playerNumber]=0
+                tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
                 return 0           
                 
     # Simon did say... (lose)
@@ -186,6 +194,7 @@ def detect_claps(clap, simon_says:bool, round_time,round_number,playerNumber):
         detect_and_shoot_person()
         # Find the correct player and set them to 0 (dead)
         players[playerNumber]=0
+        tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
         return 0
     
     # Timer ended, no clap detected
@@ -194,6 +203,7 @@ def detect_claps(clap, simon_says:bool, round_time,round_number,playerNumber):
         # TODO - What occurs when player doesn't react and simon didn't say
         set_led_color("green", "green", "solid")
         media_ctrl.play_sound(rm_define.media_sound_recognize_success, wait_for_complete=True)
+        tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
         
 
     tools.timer_ctrl(rm_define.timer_reset)
@@ -311,7 +321,7 @@ def detect_and_shoot_person():
     tools.timer_ctrl(rm_define.timer_reset)
     tools.timer_ctrl(rm_define.timer_start)
 
-    while tools.timer_current() < 5:
+    while True:
         led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 100, 0, 100, rm_define.effect_always_on)
         led_ctrl.set_top_led(rm_define.armor_top_all, 100, 0, 100, rm_define.effect_always_on)
 
@@ -319,7 +329,7 @@ def detect_and_shoot_person():
         list_PersonList=RmList(vision_ctrl.get_marker_detection_info())
         
         # If item 1 of list is equal to 1 - person identified
-        if list_PersonList[1] == 1:
+        if list_PersonList[1] == 1 and tools.timer_current() < 5:
             # Set color to state - person identified
             led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 255, 255, 255, rm_define.effect_always_on)
             led_ctrl.set_top_led(rm_define.armor_top_all, 255, 255, 255, rm_define.effect_always_on)
@@ -364,9 +374,7 @@ def detect_and_shoot_person():
     
     # Stop robot after shooting person
     gimbal_ctrl.rotate_with_speed(0, 0)  # Stop gimbal rotation
-    gimbal_ctrl.stop()  # Ensure gimbal stops moving
-    chassis_ctrl.stop()  # Ensure chassis stops moving
-    tools.timer_ctrl(rm_define.timer_reset)
+    
 
 def intro_placement():
         # gimbal follow
@@ -447,8 +455,9 @@ def start():
     print('begin game')
     # GAME LOOP
     
+    roundNumber = 20
     
-    for i in range(0,20):
+    for i in range(roundNumber):
         # Ask person to come forward
         # Currently playing note C
         
@@ -456,12 +465,18 @@ def start():
         media_ctrl.play_sound(intro_outro_audios[0])
         
         # Sleep for 5 seconds after asking for next player
-        time.sleep(5)
+        time.sleep(1)
         
         print(players)
         
         # Use camera to detect person and aim at them
-        playerNumber = detect_person()
+        playerNumber = detect_person() - 11
+
+		# Skip player if alrady dead
+        if players[playerNumber] == 0 :
+            gimbal_ctrl.rotate(rm_define.gimbal_right) 
+            continue
+        
         # Stop gimbal and chassis from adjusting after detection
         gimbal_ctrl.stop()
         chassis_ctrl.stop()
@@ -470,15 +485,17 @@ def start():
         print('starting level 1')
         level = 1
         color = "yellow"
-        round_time = 15
+        round_time = 10
         
-        if i==10:
+        # If 2 players died or at round 5
+        if players.count(1)==3 or i==5:
             print("starting level 2")
-            level=2
+            level = 2
             color = "orange"
-            round_time = 10
-            
-        if i==15:
+            round_time = 7
+        
+        # If 3 players died or at round 10
+        if players.count(1)==2 or i==10:
             print("starting level 3")
             level=3
             color = "red"
@@ -515,7 +532,7 @@ def start():
             detect_claps(selected_clap, simonSays, round_time,i,playerNumber)
 
         # EXIT SCENE (OUTRO ADDED YESTERDAY)
-        if(players.count(1)==1):
+        if players.count(1)==1 or i==roundNumber-1:
             set_led_color("green", "green", "pulsing")
             scanning_sound(1)
             media_ctrl.play_sound(intro_outro_audios[1], wait_for_complete_flag=True)
@@ -533,6 +550,7 @@ def start():
                     tools.timer_ctrl(rm_define.timer_reset) 
                     while tools.timer_current() < 8: 
                         drift_indefinitely()
+            
             
 
 			
