@@ -1,3 +1,4 @@
+from json import tool
 import random
 
 # Dictionary of RGB colors
@@ -112,7 +113,7 @@ def turn_90_left():
     chassis_ctrl.rotate_with_speed(rm_define.anticlockwise,90)
     time.sleep(1)
 
-def detect_gesture_vmarker(action, simon_says:bool, round_time, level, isGesture,playerNumber):
+def detect_gesture_vmarker(action, simon_says:bool, round_time, mercyCount, isGesture,playerNumber):
     # Set camera exposure to low for better detection
     vision_ctrl.disable_detection(rm_define.vision_detection_marker)
     vision_ctrl.enable_detection(rm_define.vision_detection_pose)
@@ -131,12 +132,7 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time, level, isGesture
     tools.timer_ctrl(rm_define.timer_start)
 
     while tools.timer_current() < round_time:
-        # if level == 1:
-        #     waiting_sound_l1(round_time)
-        # elif level == 2:
-        #     waiting_sound_l2(round_time)
-        # elif level == 3:
-        #     waiting_sound_l3(round_time)
+        
         
         # If vmarker is detected
         if vision_ctrl.check_condition(gestureOrvmarker_cmd):
@@ -159,19 +155,31 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time, level, isGesture
             else:
                 set_led_color("red", "red", "solid")
                 media_ctrl.play_sound(run_audio[0], wait_for_complete=True)
-                detect_and_shoot_person(playerNumber)
-                # Find the correct player and set them to 0 (dead)
-                players[playerNumber]=0
-                tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
+                if mercyCount==0:
+                    print("mercy")
+                    players[playerNumber]=0
+                    tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
+                else:
+                    detect_and_shoot_person(playerNumber)
+                    players[playerNumber]=0
+                    tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
                 return 0
+                # Find the correct player and set them to 0 (dead)
+                
+                
 
     # Simon did say... (lose)
     if simon_says and not detected:
         set_led_color("red", "red", "solid")
         media_ctrl.play_sound(run_audio[0], wait_for_complete=True)
-        detect_and_shoot_person(playerNumber)
-        players[playerNumber]=0
-        tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
+        if mercyCount==0:
+            print("mercy")
+            players[playerNumber]=0
+            tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
+        else:
+            detect_and_shoot_person(playerNumber)
+            players[playerNumber]=0
+            tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
         return 0
     
     # Timer ended, no vmarker detected
@@ -191,7 +199,7 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time, level, isGesture
     tools.timer_ctrl(rm_define.timer_reset)
 
 # Where 'clap' is one of the several keys in 'actions_dict'
-def detect_claps(clap, simon_says:bool, round_time, level, playerNumber):
+def detect_claps(clap, simon_says:bool, round_time, mercyCount, playerNumber):
 
     clap_cmd = actions_dict.get(clap)
     print(clap_cmd)
@@ -201,13 +209,6 @@ def detect_claps(clap, simon_says:bool, round_time, level, playerNumber):
     tools.timer_ctrl(rm_define.timer_start)
 
     while tools.timer_current() < round_time:
-        # if level == 1:
-        #     waiting_sound_l1(round_time)
-        # elif level == 2:
-        #     waiting_sound_l2(round_time)
-        # elif level == 3:
-        #     waiting_sound_l3(round_time)
-        # If specified clap is observed
         if media_ctrl.check_condition(clap_cmd):
 
             detected = True
@@ -224,20 +225,28 @@ def detect_claps(clap, simon_says:bool, round_time, level, playerNumber):
                 print("lose loser")
                 set_led_color("red", "red", "solid")
                 media_ctrl.play_sound(run_audio[0], wait_for_complete=True)
-                detect_and_shoot_person(playerNumber)
-                # Find the correct player and set them to 0 (dead)
-                players[playerNumber]=0
-                tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
+                if mercyCount==0:
+                    print("mercy")
+                    players[playerNumber]=0
+                    tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
+                else:
+                    detect_and_shoot_person(playerNumber)
+                    players[playerNumber]=0
+                    tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
                 return 0           
                 
     # Simon did say... (lose)
     if simon_says and not detected:
         set_led_color("red", "red", "solid")
         media_ctrl.play_sound(run_audio[0], wait_for_complete=True)
-        detect_and_shoot_person(playerNumber)
-        # Find the correct player and set them to 0 (dead)
-        players[playerNumber]=0
-        tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
+        if mercyCount==0:
+            print("mercy")
+            players[playerNumber]=0
+            tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
+        else:
+            detect_and_shoot_person(playerNumber)
+            players[playerNumber]=0
+            tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
         return 0
     
     # Timer ended, no clap detected
@@ -432,10 +441,8 @@ def detect_and_shoot_person(playerNumber):
         
         if tools.timer_current() > 5:
             # Move robot back to original position
-            chassis_ctrl.rotate(rm_define.anticlockwise)
-            time.sleep(2)
-            chassis_ctrl.move_with_distance(0,1)
-            time.sleep(2)
+            chassis_ctrl.move_with_distance(180,1)
+            time.sleep(3)
             # Stop robot
             gimbal_ctrl.stop()  # Ensure gimbal stops moving
             chassis_ctrl.stop()  # Ensure chassis stops moving
@@ -468,6 +475,11 @@ def intro_placement():
 
         # # recenter gimbal
         # gimbal_ctrl.recenter()
+
+# Play mercy audio
+def mercy():
+     set_led_color("orange", "magenta", rm_define.effect_flash)
+     media_ctrl.play_sound(rm_define.media_sound_solmization_1C)
 
 # Outro functions
 def drift_indefinitely():
@@ -603,17 +615,18 @@ def start():
             selected_index = gesture_af.index(selected_audio)
             selected_pose = gesture[selected_index]
             media_ctrl.play_sound(selected_audio, wait_for_complete_flag=True)
-            action_flag = detect_gesture_vmarker(selected_pose, simonSays, round_time, level, True,playerNumber)
+            action_flag = detect_gesture_vmarker(selected_pose, simonSays, round_time, mercy_count, True,playerNumber)
         elif gf==1:
             selected_audio = random.choice(claps_af)
             selected_index = claps_af.index(selected_audio)
             selected_clap = claps[selected_index]
             media_ctrl.play_sound(selected_audio, wait_for_complete_flag=True)
-            action_flag = detect_claps(selected_clap, simonSays, round_time, level,playerNumber)
+            action_flag = detect_claps(selected_clap, simonSays, round_time, mercy_count,playerNumber)
             
         # if the first time you fail mercy
         if not action_flag and mercy_count==0:
             mercy_count+=1 # to 
+            mercy()
 
         # EXIT SCENE (OUTRO ADDED YESTERDAY)
         if players.count(1)==1 or i==roundNumber-1:

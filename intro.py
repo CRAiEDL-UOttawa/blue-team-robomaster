@@ -88,7 +88,6 @@ def intro_placement():
 def mercy():
      set_led_color("orange", "magenta", rm_define.effect_flash)
      media_ctrl.play_sound(rm_define.media_sound_solmization_1C)
-     time.sleep(5)
      #shoot
      
     
