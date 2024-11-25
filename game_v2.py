@@ -154,7 +154,7 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time, level, isGesture
 
                 # distance max 1 m
                 vision_ctrl.set_marker_detection_distance(3)
-                return 0
+                return 1
             
             else:
                 set_led_color("red", "red", "solid")
@@ -181,6 +181,8 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time, level, isGesture
         media_ctrl.play_sound(rm_define.media_sound_recognize_success, wait_for_complete=True)
         vision_ctrl.disable_detection(rm_define.vision_detection_pose)
         vision_ctrl.enable_detection(rm_define.vision_detection_marker)
+        tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
+        return 1
 
         # distance max 1 m
         vision_ctrl.set_marker_detection_distance(3)
@@ -216,7 +218,7 @@ def detect_claps(clap, simon_says:bool, round_time, level, playerNumber):
                 set_led_color("green", "green", "solid")
                 media_ctrl.play_sound(rm_define.media_sound_recognize_success, wait_for_complete=True)
                 tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
-                return 0
+                return 1
 
             else:
                 print("lose loser")
@@ -245,6 +247,7 @@ def detect_claps(clap, simon_says:bool, round_time, level, playerNumber):
         set_led_color("green", "green", "solid")
         media_ctrl.play_sound(rm_define.media_sound_recognize_success, wait_for_complete=True)
         tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
+        return 1
         
 
     tools.timer_ctrl(rm_define.timer_reset)
@@ -589,6 +592,9 @@ def start():
 
         gf = random.randint(0,1)
         
+        action_flag = True
+        mercy_count = 0
+        
         # Scan for action
         set_led_color(color, color, "scanning")    
 
@@ -597,13 +603,17 @@ def start():
             selected_index = gesture_af.index(selected_audio)
             selected_pose = gesture[selected_index]
             media_ctrl.play_sound(selected_audio, wait_for_complete_flag=True)
-            detect_gesture_vmarker(selected_pose, simonSays, round_time, level, True,playerNumber)
+            action_flag = detect_gesture_vmarker(selected_pose, simonSays, round_time, level, True,playerNumber)
         elif gf==1:
             selected_audio = random.choice(claps_af)
             selected_index = claps_af.index(selected_audio)
             selected_clap = claps[selected_index]
             media_ctrl.play_sound(selected_audio, wait_for_complete_flag=True)
-            detect_claps(selected_clap, simonSays, round_time, level,playerNumber)
+            action_flag = detect_claps(selected_clap, simonSays, round_time, level,playerNumber)
+            
+        # if the first time you fail mercy
+        if not action_flag and mercy_count==0:
+            mercy_count+=1 # to 
 
         # EXIT SCENE (OUTRO ADDED YESTERDAY)
         if players.count(1)==1 or i==roundNumber-1:
@@ -624,7 +634,7 @@ def start():
                     tools.timer_ctrl(rm_define.timer_reset) 
                     while tools.timer_current() < 8: 
                         drift_indefinitely()
-            
+         
             
 
 			
