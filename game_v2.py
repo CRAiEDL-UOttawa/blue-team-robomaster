@@ -1,4 +1,3 @@
-from json import tool
 import random
 
 # Dictionary of RGB colors
