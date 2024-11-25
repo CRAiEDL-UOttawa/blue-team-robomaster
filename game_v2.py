@@ -160,8 +160,6 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time, level, isGesture
                 # Find the correct player and set them to 0 (dead)
                 players[playerNumber]=0
                 tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
-                vision_ctrl.disable_detection(rm_define.vision_detection_pose)
-                vision_ctrl.enable_detection(rm_define.vision_detection_marker)
                 return 0
 
     # Simon did say... (lose)
@@ -171,8 +169,6 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time, level, isGesture
         detect_and_shoot_person(playerNumber)
         players[playerNumber]=0
         tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
-        vision_ctrl.disable_detection(rm_define.vision_detection_pose)
-        vision_ctrl.enable_detection(rm_define.vision_detection_marker)
         return 0
     
     # Timer ended, no vmarker detected
@@ -360,7 +356,8 @@ def detect_and_shoot_person(playerNumber):
     tools.timer_ctrl(rm_define.timer_reset)
     
     timer_flag = True
-
+    vision_ctrl.disable_detection(rm_define.vision_detection_pose)
+    vision_ctrl.enable_detection(rm_define.vision_detection_marker)
     while True:
         led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 100, 0, 100, rm_define.effect_always_on)
         led_ctrl.set_top_led(rm_define.armor_top_all, 100, 0, 100, rm_define.effect_always_on)
