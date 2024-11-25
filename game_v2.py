@@ -389,16 +389,107 @@ def detect_and_shoot_person(playerNumber):
 
         if list_PersonList[1] >=1 :
             if playerNumber+11!= list_PersonList[2] and len(list_PersonList)>6:
-                    offset = 5
+                    # temp fix
+                    offset = 0
                     print(playerNumber)
-            
+            print("offset")
+            print(offset)
             # If Player ID select is correct then follow player
             if list_PersonList[2+offset] == playerNumber+11:
                 
-                if timer_flag:
-                    timer_flag = False
-                    tools.timer_ctrl(rm_define.timer_start)
                 
+                
+                # Set color to state - person identified
+                led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 255, 255, 255, rm_define.effect_always_on)
+                led_ctrl.set_top_led(rm_define.armor_top_all, 255, 255, 255, rm_define.effect_always_on)
+                
+                # Set person related data to respective variables
+                playerID = list_PersonList[2 + offset]
+                variable_X = list_PersonList[3 + offset] # Set person X value
+                variable_Y = list_PersonList[4 + offset] # Set person Y value
+                variable_W = list_PersonList[5 + offset] # Set person W value
+                variable_H = list_PersonList[6 + offset] # Set person H value
+
+                # Set error for PID controllers
+                pid_PIDyaw.set_error(variable_X - 0.5)
+                pid_PIDpitch.set_error(0.5 - variable_Y)
+
+                # Set the gimbal speed to the PID output
+                gimbal_ctrl.rotate_with_speed(pid_PIDyaw.get_output(),pid_PIDpitch.get_output())
+                time.sleep(0.5)
+
+                # If the gimbal is fixed on an individual, and x,y values are within the threshold
+                if abs(variable_X - 0.5) <= variable_Post and abs(0.5 - variable_Y) <= variable_Post:
+                    print("person detected")
+                    if timer_flag:
+                        timer_flag = False
+                        tools.timer_ctrl(rm_define.timer_start)
+
+                    if variable_W >= 0.1 and variable_H >= 0.8:
+                        led_ctrl.set_top_led(rm_define.armor_top_all, 255, 193, 0, rm_define.effect_always_on)
+                        chassis_ctrl.stop()
+
+                    # Else, set chassis to translate to the player until the if statement above is executed
+                    else:
+                        led_ctrl.set_top_led(rm_define.armor_top_all, 0, 127, 70, rm_define.effect_always_on)
+                        chassis_ctrl.set_trans_speed(0.2) # WE SET SLOW SPEED FOR TESTING, THIS CAN BE BUMPED UP (PLEASE HAVE A BIG PLAY AREA IF YOU USE A HIGH VALUE)
+                        chassis_ctrl.move(0)
+                        gun_ctrl.fire_once()
+                        media_ctrl.play_sound(rm_define.media_sound_shoot)
+
+        # If no person is identified, gimbal will rotate right until an individual is found
+        # TODO - maybe implement a more effective way to search for a person
+        else:
+            gimbal_ctrl.rotate_with_speed(0,0)
+            chassis_ctrl.stop()
+            gimbal_ctrl.rotate(rm_define.gimbal_right)
+        
+        if tools.timer_current() > 5:
+            # Move robot back to original position
+            chassis_ctrl.move_with_distance(180,1)
+            time.sleep(3)
+            # Stop robot
+            gimbal_ctrl.stop()  # Ensure gimbal stops moving
+            chassis_ctrl.stop()  # Ensure chassis stops moving
+            tools.timer_ctrl(rm_define.timer_reset)
+            return 0
+
+def detect_obliteration(playerNumber):
+        # init variables
+    global variable_X       # Person identified X coordinate
+    global variable_Y       # Person identified Y coordinate
+    global variable_Post    # Error threshold value
+    global variable_W       # Person identified Width variable (not sure exactly what this means, but we can temporarily use these to manage distance)
+    global variable_H       # Person identified Height variable (same as width above)
+    global list_PersonList  # List - stores info regarding the person identified (this is where we extract x, y, w, h)
+    global pid_PIDpitch     # PID Controller for the gimbal pitch (vertical - Y coord)
+    global pid_PIDyaw       # PID Controller for the gimbal yaw (horizontal - X coord)
+    pid_PIDyaw.set_ctrl_params(150,5,8)
+    pid_PIDpitch.set_ctrl_params(85,5,3)
+    # Set error threshold (called the Post) to 0.07
+    variable_Post = 0.07
+    robot_ctrl.set_mode(rm_define.robot_mode_chassis_follow) 
+    
+    tools.timer_ctrl(rm_define.timer_reset)
+    
+    vision_ctrl.disable_detection(rm_define.vision_detection_pose)
+    vision_ctrl.enable_detection(rm_define.vision_detection_marker)
+    # distance max 3 m
+    vision_ctrl.set_marker_detection_distance(3)
+    offset = 0
+    while True:
+        led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 100, 0, 100, rm_define.effect_always_on)
+        led_ctrl.set_top_led(rm_define.armor_top_all, 100, 0, 100, rm_define.effect_always_on)
+
+        # Set identified person data to PersonList list
+        list_PersonList=RmList(vision_ctrl.get_marker_detection_info())
+        print(list_PersonList)
+
+
+        if list_PersonList[1] == 1 :
+            
+            # If Player ID select is correct then follow player
+            if list_PersonList[2] == playerNumber+11:
                 # Set color to state - person identified
                 led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 255, 255, 255, rm_define.effect_always_on)
                 led_ctrl.set_top_led(rm_define.armor_top_all, 255, 255, 255, rm_define.effect_always_on)
@@ -427,13 +518,12 @@ def detect_and_shoot_person(playerNumber):
 
                     # Else, set chassis to translate to the player until the if statement above is executed
                     else:
-                        led_ctrl.set_top_led(rm_define.armor_top_all, 0, 127, 70, rm_define.effect_always_on)
-                        chassis_ctrl.set_trans_speed(0.2) # WE SET SLOW SPEED FOR TESTING, THIS CAN BE BUMPED UP (PLEASE HAVE A BIG PLAY AREA IF YOU USE A HIGH VALUE)
-                        chassis_ctrl.move(0)
-                        led_ctrl.gun_led_on()
-                        gun_ctrl.fire_once()
-                        media_ctrl.play_sound(rm_define.media_sound_shoot)
-                        led_ctrl.gun_led_off()
+                        chassis_ctrl.move_with_distance(0, 0.5)
+                        gimbal_ctrl.stop()  # Ensure gimbal stops moving
+                        chassis_ctrl.stop()  # Ensure chassis stops moving
+                        tools.timer_ctrl(rm_define.timer_reset)
+                        print("detect the final person")
+                        return 0
 
         # If no person is identified, gimbal will rotate right until an individual is found
         # TODO - maybe implement a more effective way to search for a person
@@ -441,18 +531,7 @@ def detect_and_shoot_person(playerNumber):
             gimbal_ctrl.rotate_with_speed(0,0)
             chassis_ctrl.stop()
             gimbal_ctrl.rotate(rm_define.gimbal_right)
-        
-        if tools.timer_current() > 5:
-            # Move robot back to original position
-            chassis_ctrl.move_with_distance(180,1)
-            time.sleep(3)
-            # Stop robot
-            gimbal_ctrl.stop()  # Ensure gimbal stops moving
-            chassis_ctrl.stop()  # Ensure chassis stops moving
-            tools.timer_ctrl(rm_define.timer_reset)
-            return 0
-    
-
+           
 def intro_placement():
         # gimbal follow
         robot_ctrl.set_mode(rm_define.robot_mode_gimbal_follow)
@@ -546,10 +625,38 @@ def start():
     # mercy flag
     action_flag = True
     mercy_count = 0
+    two = 0 
+    three = 0
     for i in range(roundNumber):
+
+        simonSays = random.randint(0,1)
+        print('starting level 1')
+        level = 1
+        color = "yellow"
+        round_time = 10
+
+        # If 2 players died or at round 5
+        if players.count(1)==3 or i==5:
+            print("starting level 2")
+            two+=1
+            if two == 1:
+                countdown_sound(1)
+            level = 2
+            color = "orange"
+            round_time = 7
+        
+        # If 3 players died or at round 10
+        if players.count(1)==2 or i==10:
+            print("starting level 3")
+            three += 1
+            if three == 1:
+                countdown_sound(1)
+            level=3
+            color = "red"
+            round_time = 5
+        
         # Ask person to come forward
         # Currently playing note C
-        
         # Change this to intro_outro_audios[0]
         media_ctrl.play_sound(intro_outro_audios[0])
         
@@ -571,33 +678,6 @@ def start():
         gimbal_ctrl.stop()
         chassis_ctrl.stop()
 
-        simonSays = random.randint(0,1)
-        print('starting level 1')
-        level = 1
-        color = "yellow"
-        round_time = 10
-
-        two = 0 
-        # If 2 players died or at round 5
-        if players.count(1)==3 or i==5:
-            print("starting level 2")
-            two+=1
-            if two == 1:
-                countdown_sound(1)
-            level = 2
-            color = "orange"
-            round_time = 7
-        
-        three = 0
-        # If 3 players died or at round 10
-        if players.count(1)==2 or i==10:
-            print("starting level 3")
-            three += 1
-            if three == 1:
-                countdown_sound(1)
-            level=3
-            color = "red"
-            round_time = 5
 
         if simonSays:
             
@@ -637,17 +717,22 @@ def start():
             mercy_count+=1 # to 
             mercy(playerNumber)
         
-        # gimbal_ctrl.set_rotate_speed(30)
-        # chassis_ctrl.stop()
-        # gimbal_ctrl.rotate(rm_define.gimbal_right) 
+        gimbal_ctrl.set_rotate_speed(30)
+        chassis_ctrl.stop()
+        gimbal_ctrl.rotate(rm_define.gimbal_right) 
         time.sleep(3)
 
         # EXIT SCENE (OUTRO ADDED YESTERDAY)
         if players.count(1)==1 or i==roundNumber-1:
+            gimbal_ctrl.stop()  # Ensure gimbal stops moving
+            chassis_ctrl.stop() 
             set_led_color("green", "green", "pulsing")
             scanning_sound(1)
             media_ctrl.play_sound(intro_outro_audios[1], wait_for_complete_flag=True)
-            chassis_ctrl.move_with_distance(0, 0.5)
+            # detect person who is not dead
+            detect_obliteration(players.index(1))
+            gimbal_ctrl.stop()  # Ensure gimbal stops moving
+            chassis_ctrl.stop() 
             armor_ctrl.set_hit_sensitivity(10)
             while True:
                 if armor_ctrl.check_condition(rm_define.cond_armor_bottom_front_hit):
