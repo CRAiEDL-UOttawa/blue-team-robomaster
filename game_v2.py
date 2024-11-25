@@ -409,12 +409,12 @@ def detect_and_shoot_person():
                     gun_ctrl.fire_once()
                     media_ctrl.play_sound(rm_define.media_sound_shoot)
                     led_ctrl.gun_led_off()
-            if tools.timer_current() > 5:
-                # Stop robot
-                gimbal_ctrl.stop()  # Ensure gimbal stops moving
-                chassis_ctrl.stop()  # Ensure chassis stops moving
-                tools.timer_ctrl(rm_define.timer_reset)
-                return 0
+        if tools.timer_current() > 5:
+            # Stop robot
+            gimbal_ctrl.stop()  # Ensure gimbal stops moving
+            chassis_ctrl.stop()  # Ensure chassis stops moving
+            tools.timer_ctrl(rm_define.timer_reset)
+            return 0
         # If no person is identified, gimbal will rotate right until an individual is found
         # TODO - maybe implement a more effective way to search for a person
         else:
@@ -446,8 +446,8 @@ def intro_placement():
         turn_90_left()
         media_ctrl.play_sound(rm_define.media_sound_solmization_1C)
 
-        # recenter gimbal
-        gimbal_ctrl.recenter()
+        # # recenter gimbal
+        # gimbal_ctrl.recenter()
 
 # Outro functions
 def drift_indefinitely():
