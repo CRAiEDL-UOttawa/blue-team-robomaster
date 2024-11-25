@@ -156,7 +156,7 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time, level, isGesture
             else:
                 set_led_color("red", "red", "solid")
                 media_ctrl.play_sound(run_audio[0], wait_for_complete=True)
-                detect_and_shoot_person()
+                detect_and_shoot_person(playerNumber)
                 # Find the correct player and set them to 0 (dead)
                 players[playerNumber]=0
                 tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
@@ -168,7 +168,7 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time, level, isGesture
     if simon_says and not detected:
         set_led_color("red", "red", "solid")
         media_ctrl.play_sound(run_audio[0], wait_for_complete=True)
-        detect_and_shoot_person()
+        detect_and_shoot_person(playerNumber)
         players[playerNumber]=0
         tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
         vision_ctrl.disable_detection(rm_define.vision_detection_pose)
@@ -220,7 +220,7 @@ def detect_claps(clap, simon_says:bool, round_time, level, playerNumber):
                 print("lose loser")
                 set_led_color("red", "red", "solid")
                 media_ctrl.play_sound(run_audio[0], wait_for_complete=True)
-                detect_and_shoot_person()
+                detect_and_shoot_person(playerNumber)
                 # Find the correct player and set them to 0 (dead)
                 players[playerNumber]=0
                 tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
@@ -230,7 +230,7 @@ def detect_claps(clap, simon_says:bool, round_time, level, playerNumber):
     if simon_says and not detected:
         set_led_color("red", "red", "solid")
         media_ctrl.play_sound(run_audio[0], wait_for_complete=True)
-        detect_and_shoot_person()
+        detect_and_shoot_person(playerNumber)
         # Find the correct player and set them to 0 (dead)
         players[playerNumber]=0
         tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
@@ -341,7 +341,7 @@ def detect_person():
             chassis_ctrl.stop()
             gimbal_ctrl.rotate(rm_define.gimbal_right) 
             
-def detect_and_shoot_person():
+def detect_and_shoot_person(playerNumber):
         # init variables
     global variable_X       # Person identified X coordinate
     global variable_Y       # Person identified Y coordinate
@@ -380,10 +380,14 @@ def detect_and_shoot_person():
             led_ctrl.set_top_led(rm_define.armor_top_all, 255, 255, 255, rm_define.effect_always_on)
             
             # Set person related data to respective variables
-            variable_X = list_PersonList[3] # Set person X value
-            variable_Y = list_PersonList[4] # Set person Y value
-            variable_W = list_PersonList[5] # Set person W value
-            variable_H = list_PersonList[6] # Set person H value
+            playerID = list_PersonList[2 + offset]
+            variable_X = list_PersonList[3 + offset] # Set person X value
+            variable_Y = list_PersonList[4 + offset] # Set person Y value
+            variable_W = list_PersonList[5 + offset] # Set person W value
+            variable_H = list_PersonList[6 + offset] # Set person H value
+            
+            if playerNumber!= playerID and len(list_PersonList)>6:
+                offset = 5
 
             # Set error for PID controllers
             pid_PIDyaw.set_error(variable_X - 0.5)
