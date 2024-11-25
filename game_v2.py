@@ -131,12 +131,12 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time, level, isGesture
     tools.timer_ctrl(rm_define.timer_start)
 
     while tools.timer_current() < round_time:
-        if level == 1:
-            waiting_sound_l1(round_time)
-        elif level == 2:
-            waiting_sound_l2(round_time)
-        elif level == 3:
-            waiting_sound_l3(round_time)
+        # if level == 1:
+        #     waiting_sound_l1(round_time)
+        # elif level == 2:
+        #     waiting_sound_l2(round_time)
+        # elif level == 3:
+        #     waiting_sound_l3(round_time)
         
         # If vmarker is detected
         if vision_ctrl.check_condition(gestureOrvmarker_cmd):
@@ -151,6 +151,9 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time, level, isGesture
                 tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
                 vision_ctrl.disable_detection(rm_define.vision_detection_pose)
                 vision_ctrl.enable_detection(rm_define.vision_detection_marker)
+
+                # distance max 1 m
+                vision_ctrl.set_marker_detection_distance(3)
                 return 0
             
             else:
@@ -178,6 +181,9 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time, level, isGesture
         media_ctrl.play_sound(rm_define.media_sound_recognize_success, wait_for_complete=True)
         vision_ctrl.disable_detection(rm_define.vision_detection_pose)
         vision_ctrl.enable_detection(rm_define.vision_detection_marker)
+
+        # distance max 1 m
+        vision_ctrl.set_marker_detection_distance(3)
         tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
     
     tools.timer_ctrl(rm_define.timer_reset)
@@ -193,12 +199,12 @@ def detect_claps(clap, simon_says:bool, round_time, level, playerNumber):
     tools.timer_ctrl(rm_define.timer_start)
 
     while tools.timer_current() < round_time:
-        if level == 1:
-            waiting_sound_l1(round_time)
-        elif level == 2:
-            waiting_sound_l2(round_time)
-        elif level == 3:
-            waiting_sound_l3(round_time)
+        # if level == 1:
+        #     waiting_sound_l1(round_time)
+        # elif level == 2:
+        #     waiting_sound_l2(round_time)
+        # elif level == 3:
+        #     waiting_sound_l3(round_time)
         # If specified clap is observed
         if media_ctrl.check_condition(clap_cmd):
 
@@ -358,6 +364,9 @@ def detect_and_shoot_person(playerNumber):
     timer_flag = True
     vision_ctrl.disable_detection(rm_define.vision_detection_pose)
     vision_ctrl.enable_detection(rm_define.vision_detection_marker)
+    # distance max 1 m
+    vision_ctrl.set_marker_detection_distance(3)
+    offset = 0
     while True:
         led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 100, 0, 100, rm_define.effect_always_on)
         led_ctrl.set_top_led(rm_define.armor_top_all, 100, 0, 100, rm_define.effect_always_on)
@@ -383,7 +392,7 @@ def detect_and_shoot_person(playerNumber):
             variable_W = list_PersonList[5 + offset] # Set person W value
             variable_H = list_PersonList[6 + offset] # Set person H value
             
-            if playerNumber!= playerID and len(list_PersonList)>6:
+            if playerNumber+11!= playerID and len(list_PersonList)>6:
                 offset = 5
 
             # Set error for PID controllers
@@ -497,6 +506,8 @@ def start():
 
     media_ctrl.enable_sound_recognition(rm_define.sound_detection_applause)
     vision_ctrl.enable_detection(rm_define.vision_detection_marker)
+    # distance max 1 m
+    vision_ctrl.set_marker_detection_distance(3)
     vision_ctrl.enable_detection(rm_define.vision_detection_pose)
     gimbal_ctrl.rotate(rm_define.gimbal_up)
 
@@ -536,19 +547,25 @@ def start():
         level = 1
         color = "yellow"
         round_time = 10
-        
+
+        two = 0 
         # If 2 players died or at round 5
         if players.count(1)==3 or i==5:
             print("starting level 2")
-            countdown_sound(1)
+            two+=1
+            if two == 1:
+                countdown_sound(1)
             level = 2
             color = "orange"
             round_time = 7
         
+        three = 0
         # If 3 players died or at round 10
         if players.count(1)==2 or i==10:
             print("starting level 3")
-            countdown_sound(1)
+            three += 1
+            if three == 1:
+                countdown_sound(1)
             level=3
             color = "red"
             round_time = 5
