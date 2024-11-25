@@ -65,9 +65,9 @@ actions_dict = {
 players = [1,1,1,1,1]
 
 def shoot_one_lazer():
-    led_ctrl.gun_led_on()
+    # led_ctrl.gun_led_on()
     ir_blaster_ctrl.fire_once()
-    led_ctrl.gun_led_off()
+    # led_ctrl.gun_led_off()
     media_ctrl.play_sound(rm_define.media_sound_shoot)
     
 def alive_sound(x): # x -> amount of times you want the sad sound to play

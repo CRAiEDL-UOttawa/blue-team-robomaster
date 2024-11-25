@@ -20,14 +20,14 @@ def shoot_sound(x): # x -> amount of times you want the shooting sound to play
 
 def shoot_lazer(x): # x -> amount of times you want to shoot
     for count in range(x):
-        # turn gun light on
-        led_ctrl.gun_led_on()
+        # # turn gun light on
+        # led_ctrl.gun_led_on()
 
         # fire lazer
         ir_blaster_ctrl.fire_once()
 
-        # turn gun light off
-        led_ctrl.gun_led_off()
+        # # turn gun light off
+        # led_ctrl.gun_led_off()
 
         # play shoot sound once (audio.py)
         shoot_sound(1)
@@ -84,6 +84,15 @@ def intro_placement():
 
         # recenter gimbal
         gimbal_ctrl.recenter()
+
+def mercy():
+     set_led_color("orange", "magenta", rm_define.effect_flash)
+     media_ctrl.play_sound(rm_define.media_sound_solmization_1C)
+     time.sleep(5)
+     #shoot
+     
+    
+     
         
 def start():
     intro_placement()
