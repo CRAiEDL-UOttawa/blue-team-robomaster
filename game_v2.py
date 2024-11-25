@@ -373,9 +373,12 @@ def detect_and_shoot_person(playerNumber):
 
         # Set identified person data to PersonList list
         list_PersonList=RmList(vision_ctrl.get_marker_detection_info())
+
+        if playerNumber+11!= list_PersonList[2] and len(list_PersonList)>6:
+                offset = 5
         
-        # If item 1 of list is equal to 1 - person identified
-        if list_PersonList[1] == 1:
+        # If Player ID select is correct then follow player
+        if list_PersonList[2+offset] == playerNumber+11:
             
             if timer_flag:
                 timer_flag = False
@@ -391,9 +394,6 @@ def detect_and_shoot_person(playerNumber):
             variable_Y = list_PersonList[4 + offset] # Set person Y value
             variable_W = list_PersonList[5 + offset] # Set person W value
             variable_H = list_PersonList[6 + offset] # Set person H value
-            
-            if playerNumber+11!= playerID and len(list_PersonList)>6:
-                offset = 5
 
             # Set error for PID controllers
             pid_PIDyaw.set_error(variable_X - 0.5)
@@ -428,6 +428,11 @@ def detect_and_shoot_person(playerNumber):
             gimbal_ctrl.rotate(rm_define.gimbal_right)
         
         if tools.timer_current() > 5:
+            # Move robot back to original position
+            chassis_ctrl.rotate(rm_define.anticlockwise)
+            time.sleep(2)
+            chassis_ctrl.move_with_distance(0,1)
+            time.sleep(2)
             # Stop robot
             gimbal_ctrl.stop()  # Ensure gimbal stops moving
             chassis_ctrl.stop()  # Ensure chassis stops moving
