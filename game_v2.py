@@ -520,7 +520,8 @@ def start():
 
 		# Skip player if alrady dead
         if players[playerNumber] == 0 :
-            gimbal_ctrl.rotate(rm_define.gimbal_right) 
+            gimbal_ctrl.rotate(rm_define.gimbal_right)
+            time.sleep(3) 
             continue
         
         # Stop gimbal and chassis from adjusting after detection
