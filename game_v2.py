@@ -35,18 +35,19 @@ variable_W = 0
 variable_H = 0
 
 # Arrays of audio files corresponding to specific actions within our game and arrays containing those actions
-claps_af = [rm_define.media_custom_audio_5, rm_define.media_custom_audio_2] 
+claps_af = [rm_define.media_custom_audio_9, rm_define.media_custom_audio_8] 
 claps = ['two_clap', 'three_clap'] 
 
-# vmarker_af = [rm_define.media_custom_audio_5,rm_define.media_custom_audio_8 , rm_define.media_custom_audio_9,rm_define.media_custom_audio_7]
-# vmarker = [3,3,5,5]
+mercy_audio = [rm_define.media_custom_audio_7]
 
-gesture_af = [rm_define.media_custom_audio_0, rm_define.media_custom_audio_3]
+gesture_af = [rm_define.media_custom_audio_1, rm_define.media_custom_audio_4]
 gesture = ['hands_up', 'hands_down']
 
-intro_outro_audios = [rm_define.media_custom_audio_8,rm_define.media_custom_audio_6,rm_define.media_custom_audio_7]
+intro_outro_audios = [rm_define.media_custom_audio_6,rm_define.media_custom_audio_0,rm_define.media_custom_audio_3]
 
-run_audio = [rm_define.media_custom_audio_4]
+run_audio = [rm_define.media_custom_audio_2]
+
+simon_says_audio = [rm_define.media_custom_audio_5]
 # Dictionary makes command calls easier
 actions_dict = {
     'two_clap': rm_define.cond_sound_recognized_applause_twice,
@@ -395,9 +396,7 @@ def detect_and_shoot_person(playerNumber):
             print("offset")
             print(offset)
             # If Player ID select is correct then follow player
-            if list_PersonList[2+offset] == playerNumber+11:
-                
-                
+            if list_PersonList[2+offset] == playerNumber+11:    
                 
                 # Set color to state - person identified
                 led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 255, 255, 255, rm_define.effect_always_on)
@@ -445,9 +444,11 @@ def detect_and_shoot_person(playerNumber):
             gimbal_ctrl.rotate(rm_define.gimbal_right)
         
         if tools.timer_current() > 5:
+            chassis_ctrl.set_trans_speed(1)
             # Move robot back to original position
             chassis_ctrl.move_with_distance(180,1)
             time.sleep(3)
+            chassis_ctrl.set_trans_speed(0.2)
             # Stop robot
             gimbal_ctrl.stop()  # Ensure gimbal stops moving
             chassis_ctrl.stop()  # Ensure chassis stops moving
@@ -561,7 +562,7 @@ def intro_placement():
 # Play mercy audio
 def mercy(playerNumber):
      set_led_color("orange", "magenta", "flashing")
-     media_ctrl.play_sound(rm_define.media_sound_solmization_1C)
+     media_ctrl.play_sound(mercy_audio[0])
      time.sleep(5)
      detect_and_shoot_person(playerNumber)
 
@@ -683,13 +684,13 @@ def start():
             
             if level==1:
                 set_led_color("white", "white", "pulsing")
-                media_ctrl.play_sound(rm_define.media_custom_audio_1, wait_for_complete_flag=True)
+                media_ctrl.play_sound(simon_says_audio[0], wait_for_complete_flag=True)
             elif level==2:
                 set_led_color("cyan", "cyan", "pulsing")
-                media_ctrl.play_sound(rm_define.media_custom_audio_1, wait_for_complete_flag=True)
+                media_ctrl.play_sound(simon_says_audio[0], wait_for_complete_flag=True)
             elif level==3:
                 set_led_color("purple", "purple", "pulsing")
-                media_ctrl.play_sound(rm_define.media_custom_audio_1, wait_for_complete_flag=True)
+                media_ctrl.play_sound(simon_says_audio[0], wait_for_complete_flag=True)
 
         gf = random.randint(0,1)
         
