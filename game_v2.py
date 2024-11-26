@@ -169,12 +169,12 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time, mercyCount, isGe
             
             else:
                 set_led_color("red", "red", "solid")
-                media_ctrl.play_sound(run_audio[0], wait_for_complete=True)
                 if mercyCount==0:
                     print("mercy")
                     players[playerNumber]=0
                     tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
                 else:
+                    media_ctrl.play_sound(run_audio[0], wait_for_complete=True)
                     detect_and_shoot_person(playerNumber)
                     players[playerNumber]=0
                     tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
@@ -186,12 +186,12 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time, mercyCount, isGe
     # Simon did say... (lose)
     if simon_says and not detected:
         set_led_color("red", "red", "solid")
-        media_ctrl.play_sound(run_audio[0], wait_for_complete=True)
         if mercyCount==0:
             print("mercy")
             players[playerNumber]=0
             tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
         else:
+            media_ctrl.play_sound(run_audio[0], wait_for_complete=True)
             detect_and_shoot_person(playerNumber)
             players[playerNumber]=0
             tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
@@ -239,12 +239,12 @@ def detect_claps(clap, simon_says:bool, round_time, mercyCount, playerNumber):
             else:
                 print("lose loser")
                 set_led_color("red", "red", "solid")
-                media_ctrl.play_sound(run_audio[0], wait_for_complete=True)
                 if mercyCount==0:
                     print("mercy")
                     players[playerNumber]=0
                     tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
                 else:
+                    media_ctrl.play_sound(run_audio[0], wait_for_complete=True)
                     detect_and_shoot_person(playerNumber)
                     players[playerNumber]=0
                     tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
@@ -253,12 +253,12 @@ def detect_claps(clap, simon_says:bool, round_time, mercyCount, playerNumber):
     # Simon did say... (lose)
     if simon_says and not detected:
         set_led_color("red", "red", "solid")
-        media_ctrl.play_sound(run_audio[0], wait_for_complete=True)
         if mercyCount==0:
             print("mercy")
             players[playerNumber]=0
             tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
         else:
+            media_ctrl.play_sound(run_audio[0], wait_for_complete=True)
             detect_and_shoot_person(playerNumber)
             players[playerNumber]=0
             tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
