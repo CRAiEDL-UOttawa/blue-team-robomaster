@@ -81,6 +81,21 @@ def angry_sound(x): # x -> amount of times you want the sad sound to play
       media_ctrl.play_sound(rm_define.media_sound_solmization_1B)
       ## need to make this more evil
 
+def l1():
+      media_ctrl.play_sound(rm_define.media_sound_solmization_2C)
+      media_ctrl.play_sound(rm_define.media_sound_solmization_2CSharp)
+      media_ctrl.play_sound(rm_define.media_sound_solmization_2C)
+
+def l2():
+      media_ctrl.play_sound(rm_define.media_sound_solmization_1G)
+      media_ctrl.play_sound(rm_define.media_sound_solmization_2CSharp)
+      media_ctrl.play_sound(rm_define.media_sound_solmization_1G)
+
+def l3():
+      media_ctrl.play_sound(rm_define.media_sound_solmization_1C)
+      media_ctrl.play_sound(rm_define.media_sound_solmization_2CSharp)
+      media_ctrl.play_sound(rm_define.media_sound_solmization_1C)
+
 def scanning_sound(x): # x -> amount of times you want the scanning sound to play
         for count in range(x):
             media_ctrl.play_sound(rm_define.media_sound_scanning, wait_for_complete=True)
@@ -622,6 +637,7 @@ def start():
     
     roundNumber = 20
     countdown_sound(1)
+    l1()
 
     # mercy flag
     action_flag = True
@@ -642,6 +658,7 @@ def start():
             two+=1
             if two == 1:
                 countdown_sound(1)
+                l2()
             level = 2
             color = "orange"
             round_time = 7
@@ -652,6 +669,7 @@ def start():
             three += 1
             if three == 1:
                 countdown_sound(1)
+                l3()
             level=3
             color = "red"
             round_time = 5
