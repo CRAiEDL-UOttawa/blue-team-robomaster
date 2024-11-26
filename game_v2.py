@@ -578,7 +578,7 @@ def intro_placement():
 def mercy(playerNumber):
      set_led_color("orange", "magenta", "flashing")
      media_ctrl.play_sound(mercy_audio[0])
-     time.sleep(5)
+     time.sleep(7)
      detect_and_shoot_person(playerNumber)
 
 # Outro functions
@@ -601,7 +601,6 @@ def spin():
         gimbal_ctrl.rotate(rm_define.gimbal_left)
         gimbal_ctrl.rotate(rm_define.gimbal_right)
 
-
 # move to lights file as well
 def obliteration_colouring(x1, x2, x3, x4, x5, x6):
     c1 = RGB.get(x1)
@@ -617,6 +616,30 @@ def obliteration_colouring(x1, x2, x3, x4, x5, x6):
     led_ctrl.set_bottom_led(rm_define.armor_bottom_back, c4[0], c4[1], c4[2], rm_define.effect_flash) # rear chassis
     led_ctrl.set_bottom_led(rm_define.armor_bottom_left, c5[0], c5[1], c5[2], rm_define.effect_flash) # left chassis
     led_ctrl.set_bottom_led(rm_define.armor_bottom_right, c6[0], c6[1], c6[2], rm_define.effect_flash) # right chassis
+
+def outro():
+    gimbal_ctrl.stop()  # Ensure gimbal stops moving
+    chassis_ctrl.stop() 
+    set_led_color("green", "green", "pulsing")
+    scanning_sound(1)
+    media_ctrl.play_sound(intro_outro_audios[1], wait_for_complete_flag=True)
+    # detect person who is not dead
+    detect_obliteration(players.index(1))
+    gimbal_ctrl.stop()  # Ensure gimbal stops moving
+    chassis_ctrl.stop() 
+    armor_ctrl.set_hit_sensitivity(10)
+    while True:
+        if armor_ctrl.check_condition(rm_define.cond_armor_bottom_front_hit):
+            set_led_color("red", "red", "pulsing")
+            attacked_sound(1)
+            angry_sound(2)
+            tools.timer_ctrl(rm_define.timer_start)
+            while tools.timer_current() < 5:
+                spin()
+                media_ctrl.play_sound(intro_outro_audios[2], wait_for_complete_flag=True)
+            tools.timer_ctrl(rm_define.timer_reset) 
+            while tools.timer_current() < 8: 
+                drift_indefinitely()
 
 def start():
     #(INTRO ADDED YESTERDAY)
@@ -741,31 +764,11 @@ def start():
         gimbal_ctrl.rotate(rm_define.gimbal_right) 
         time.sleep(3)
 
-        # EXIT SCENE (OUTRO ADDED YESTERDAY)
+        # If 1 player is left alive play outro
         if players.count(1)==1 or i==roundNumber-1:
-            gimbal_ctrl.stop()  # Ensure gimbal stops moving
-            chassis_ctrl.stop() 
-            set_led_color("green", "green", "pulsing")
-            scanning_sound(1)
-            media_ctrl.play_sound(intro_outro_audios[1], wait_for_complete_flag=True)
-            # detect person who is not dead
-            detect_obliteration(players.index(1))
-            gimbal_ctrl.stop()  # Ensure gimbal stops moving
-            chassis_ctrl.stop() 
-            armor_ctrl.set_hit_sensitivity(10)
-            while True:
-                if armor_ctrl.check_condition(rm_define.cond_armor_bottom_front_hit):
-                    set_led_color("red", "red", "pulsing")
-                    attacked_sound(1)
-                    angry_sound(2)
-                    tools.timer_ctrl(rm_define.timer_start)
-                    while tools.timer_current() < 5:
-                        spin()
-                        media_ctrl.play_sound(intro_outro_audios[2], wait_for_complete_flag=True)
-                    tools.timer_ctrl(rm_define.timer_reset) 
-                    while tools.timer_current() < 8: 
-                        drift_indefinitely()
-         
+            outro()
+    # If more than 1 player is alive play outro
+    outro()   
             
 
 			
