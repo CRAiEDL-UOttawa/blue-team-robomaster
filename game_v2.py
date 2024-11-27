@@ -439,7 +439,7 @@ def detect_and_shoot_person(playerNumber):
                         timer_flag = False
                         tools.timer_ctrl(rm_define.timer_start)
 
-                    if variable_W >= 0.1 and variable_H >= 0.8:
+                    if variable_W >= 0.1 and variable_H >= 0.6:
                         led_ctrl.set_top_led(rm_define.armor_top_all, 255, 193, 0, rm_define.effect_always_on)
                         chassis_ctrl.stop()
 
