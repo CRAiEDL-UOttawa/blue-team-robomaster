@@ -82,19 +82,19 @@ def angry_sound(x): # x -> amount of times you want the sad sound to play
       ## need to make this more evil
 
 def l1():
-      media_ctrl.play_sound(rm_define.media_sound_solmization_2C)
-      media_ctrl.play_sound(rm_define.media_sound_solmization_2CSharp)
-      media_ctrl.play_sound(rm_define.media_sound_solmization_2C)
+      media_ctrl.play_sound(rm_define.media_sound_solmization_2C, wait_for_complete=True)
+      media_ctrl.play_sound(rm_define.media_sound_solmization_2CSharp, wait_for_complete=True)
+      media_ctrl.play_sound(rm_define.media_sound_solmization_2C, wait_for_complete=True)
 
 def l2():
-      media_ctrl.play_sound(rm_define.media_sound_solmization_1G)
-      media_ctrl.play_sound(rm_define.media_sound_solmization_2CSharp)
-      media_ctrl.play_sound(rm_define.media_sound_solmization_1G)
+      media_ctrl.play_sound(rm_define.media_sound_solmization_1G, wait_for_complete=True)
+      media_ctrl.play_sound(rm_define.media_sound_solmization_2CSharp, wait_for_complete=True)
+      media_ctrl.play_sound(rm_define.media_sound_solmization_1G, wait_for_complete=True)
 
 def l3():
-      media_ctrl.play_sound(rm_define.media_sound_solmization_1C)
-      media_ctrl.play_sound(rm_define.media_sound_solmization_2CSharp)
-      media_ctrl.play_sound(rm_define.media_sound_solmization_1C)
+      media_ctrl.play_sound(rm_define.media_sound_solmization_1C, wait_for_complete=True)
+      media_ctrl.play_sound(rm_define.media_sound_solmization_2CSharp, wait_for_complete=True)
+      media_ctrl.play_sound(rm_define.media_sound_solmization_1C, wait_for_complete=True)
 
 def scanning_sound(x): # x -> amount of times you want the scanning sound to play
         for count in range(x):
@@ -583,7 +583,7 @@ def mercy(playerNumber):
 
 # Outro functions
 def drift_indefinitely():
-    while True:
+    while tools.timer_current() < 8: 
         chassis_ctrl.set_trans_speed(3.5)
         chassis_ctrl.set_rotate_speed(180)
         chassis_ctrl.move_with_time(0,0.5)
@@ -622,9 +622,9 @@ def outro():
     chassis_ctrl.stop() 
     set_led_color("green", "green", "pulsing")
     scanning_sound(1)
-    media_ctrl.play_sound(intro_outro_audios[1], wait_for_complete_flag=True)
     # detect person who is not dead
     detect_obliteration(players.index(1))
+    media_ctrl.play_sound(intro_outro_audios[1], wait_for_complete_flag=True)
     gimbal_ctrl.stop()  # Ensure gimbal stops moving
     chassis_ctrl.stop() 
     armor_ctrl.set_hit_sensitivity(10)
@@ -634,9 +634,9 @@ def outro():
             attacked_sound(1)
             angry_sound(2)
             tools.timer_ctrl(rm_define.timer_start)
-            while tools.timer_current() < 5:
+            while tools.timer_current() < 3:
                 spin()
-                media_ctrl.play_sound(intro_outro_audios[2], wait_for_complete_flag=True)
+                # media_ctrl.play_sound(intro_outro_audios[2], wait_for_complete_flag=True)
             tools.timer_ctrl(rm_define.timer_reset) 
             while tools.timer_current() < 8: 
                 drift_indefinitely()
@@ -767,8 +767,7 @@ def start():
         # If 1 player is left alive play outro
         if players.count(1)==1 or i==roundNumber-1:
             outro()
-    # If more than 1 player is alive play outro
-    outro()   
+  
             
 
 			
