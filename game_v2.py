@@ -439,14 +439,14 @@ def detect_and_shoot_person(playerNumber):
                         timer_flag = False
                         tools.timer_ctrl(rm_define.timer_start)
 
-                    if variable_W >= 0.1 and variable_H >= 0.45:
+                    if variable_W >= 0.1 and variable_H >= 0.25:
                         led_ctrl.set_top_led(rm_define.armor_top_all, 255, 193, 0, rm_define.effect_always_on)
                         chassis_ctrl.stop()
 
                     # Else, set chassis to translate to the player until the if statement above is executed
                     else:
                         led_ctrl.set_top_led(rm_define.armor_top_all, 0, 127, 70, rm_define.effect_always_on)
-                        chassis_ctrl.set_trans_speed(0.5) # WE SET SLOW SPEED FOR TESTING, THIS CAN BE BUMPED UP (PLEASE HAVE A BIG PLAY AREA IF YOU USE A HIGH VALUE)
+                        chassis_ctrl.set_trans_speed(0.3) # WE SET SLOW SPEED FOR TESTING, THIS CAN BE BUMPED UP (PLEASE HAVE A BIG PLAY AREA IF YOU USE A HIGH VALUE)
                         chassis_ctrl.move(0)
                         gun_ctrl.fire_once()
                         media_ctrl.play_sound(rm_define.media_sound_shoot)
@@ -528,7 +528,7 @@ def detect_obliteration(playerNumber):
                 # If the gimbal is fixed on an individual, and x,y values are within the threshold
                 if abs(variable_X - 0.5) <= variable_Post and abs(0.5 - variable_Y) <= variable_Post:
                     print("person detected")
-                    if variable_W >= 0.1 and variable_H >= 0.45:
+                    if variable_W >= 0.1 and variable_H >= 0.8:
                         led_ctrl.set_top_led(rm_define.armor_top_all, 255, 193, 0, rm_define.effect_always_on)
                         chassis_ctrl.stop()
 
@@ -583,13 +583,15 @@ def mercy(playerNumber):
 
 # Outro functions
 def drift_indefinitely():
-    while tools.timer_current() < 8: 
-        chassis_ctrl.set_trans_speed(3.5)
-        chassis_ctrl.set_rotate_speed(180)
-        chassis_ctrl.move_with_time(0,0.5)
-        shoot_one_lazer()
-        chassis_ctrl.move_and_rotate(90, rm_define.anticlockwise)
-        time.sleep(0.5)
+    # tools.timer_ctrl(rm_define.timer_reset)
+    # tools.timer_ctrl(rm_define.timer_start)
+    # while tools.timer_current() < 5: 
+    chassis_ctrl.set_trans_speed(3.5)
+    chassis_ctrl.set_rotate_speed(180)
+    chassis_ctrl.move_with_time(0,0.5)
+    shoot_one_lazer()
+    chassis_ctrl.move_and_rotate(90, rm_define.anticlockwise)
+    time.sleep(0.5)
 
 def spin():
     robot_ctrl.set_mode(rm_define.robot_mode_free)
@@ -638,8 +640,12 @@ def outro():
                 spin()
                 # media_ctrl.play_sound(intro_outro_audios[2], wait_for_complete_flag=True)
             tools.timer_ctrl(rm_define.timer_reset) 
-            while tools.timer_current() < 8: 
-                drift_indefinitely()
+            drift_indefinitely()
+            drift_indefinitely()
+            drift_indefinitely()
+            drift_indefinitely()
+            gimbal_ctrl.stop()  # Ensure gimbal stops moving
+            chassis_ctrl.stop() 
 
 def start():
     #(INTRO ADDED YESTERDAY)
