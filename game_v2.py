@@ -461,7 +461,7 @@ def detect_and_shoot_person(playerNumber):
         if tools.timer_current() > 5:
             chassis_ctrl.set_trans_speed(1)
             # Move robot back to original position
-            chassis_ctrl.move_with_distance(180,2)
+            chassis_ctrl.move_with_distance(180,1.2)
             time.sleep(3)
             chassis_ctrl.set_trans_speed(0.2)
             # Stop robot
