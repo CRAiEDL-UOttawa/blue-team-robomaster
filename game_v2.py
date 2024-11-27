@@ -439,7 +439,7 @@ def detect_and_shoot_person(playerNumber):
                         timer_flag = False
                         tools.timer_ctrl(rm_define.timer_start)
 
-                    if variable_W >= 0.1 and variable_H >= 0.6:
+                    if variable_W >= 0.1 and variable_H >= 0.45:
                         led_ctrl.set_top_led(rm_define.armor_top_all, 255, 193, 0, rm_define.effect_always_on)
                         chassis_ctrl.stop()
 
@@ -461,7 +461,7 @@ def detect_and_shoot_person(playerNumber):
         if tools.timer_current() > 5:
             chassis_ctrl.set_trans_speed(1)
             # Move robot back to original position
-            chassis_ctrl.move_with_distance(180,1.2)
+            chassis_ctrl.move_with_distance(180,1)
             time.sleep(3)
             chassis_ctrl.set_trans_speed(0.2)
             # Stop robot
@@ -528,7 +528,7 @@ def detect_obliteration(playerNumber):
                 # If the gimbal is fixed on an individual, and x,y values are within the threshold
                 if abs(variable_X - 0.5) <= variable_Post and abs(0.5 - variable_Y) <= variable_Post:
                     print("person detected")
-                    if variable_W >= 0.1 and variable_H >= 0.8:
+                    if variable_W >= 0.1 and variable_H >= 0.45:
                         led_ctrl.set_top_led(rm_define.armor_top_all, 255, 193, 0, rm_define.effect_always_on)
                         chassis_ctrl.stop()
 
@@ -623,8 +623,8 @@ def outro():
     set_led_color("green", "green", "pulsing")
     scanning_sound(1)
     # detect person who is not dead
-    detect_obliteration(players.index(1))
     media_ctrl.play_sound(intro_outro_audios[1], wait_for_complete_flag=True)
+    detect_obliteration(players.index(1))
     gimbal_ctrl.stop()  # Ensure gimbal stops moving
     chassis_ctrl.stop() 
     armor_ctrl.set_hit_sensitivity(10)
