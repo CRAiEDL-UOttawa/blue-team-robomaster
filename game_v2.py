@@ -446,7 +446,7 @@ def detect_and_shoot_person(playerNumber):
                     # Else, set chassis to translate to the player until the if statement above is executed
                     else:
                         led_ctrl.set_top_led(rm_define.armor_top_all, 0, 127, 70, rm_define.effect_always_on)
-                        chassis_ctrl.set_trans_speed(1) # WE SET SLOW SPEED FOR TESTING, THIS CAN BE BUMPED UP (PLEASE HAVE A BIG PLAY AREA IF YOU USE A HIGH VALUE)
+                        chassis_ctrl.set_trans_speed(0.5) # WE SET SLOW SPEED FOR TESTING, THIS CAN BE BUMPED UP (PLEASE HAVE A BIG PLAY AREA IF YOU USE A HIGH VALUE)
                         chassis_ctrl.move(0)
                         gun_ctrl.fire_once()
                         media_ctrl.play_sound(rm_define.media_sound_shoot)
@@ -461,7 +461,7 @@ def detect_and_shoot_person(playerNumber):
         if tools.timer_current() > 5:
             chassis_ctrl.set_trans_speed(1)
             # Move robot back to original position
-            chassis_ctrl.move_with_distance(180,1)
+            chassis_ctrl.move_with_distance(180,2)
             time.sleep(3)
             chassis_ctrl.set_trans_speed(0.2)
             # Stop robot
