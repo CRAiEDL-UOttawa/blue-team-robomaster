@@ -328,6 +328,7 @@ def detect_person():
     # Set error threshold (called the Post) to 0.07
     variable_Post = 0.07
     robot_ctrl.set_mode(rm_define.robot_mode_chassis_follow)
+    gimbal_ctrl.resume()
 
     while True:
         led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 100, 0, 100, rm_define.effect_always_on)
@@ -360,6 +361,7 @@ def detect_person():
                 print("person detected")
                 gimbal_ctrl.rotate_with_speed(0, 0)  # Stop gimbal rotation
                 gimbal_ctrl.stop()  # Ensure gimbal stops moving
+                gimbal_ctrl.suspend()  # Ensure gimbal stops moving
                 chassis_ctrl.stop()  # Ensure chassis stops moving
                 return id
         
@@ -368,6 +370,7 @@ def detect_person():
         else:
             gimbal_ctrl.rotate_with_speed(0,0)
             chassis_ctrl.stop()
+            gimbal_ctrl.suspend()  # Ensure gimbal stops moving
             gimbal_ctrl.rotate(rm_define.gimbal_right) 
             
 def detect_and_shoot_person(playerNumber):
@@ -384,7 +387,8 @@ def detect_and_shoot_person(playerNumber):
     pid_PIDpitch.set_ctrl_params(85,5,3)
     # Set error threshold (called the Post) to 0.07
     variable_Post = 0.07
-    robot_ctrl.set_mode(rm_define.robot_mode_chassis_follow) 
+    robot_ctrl.set_mode(rm_define.robot_mode_chassis_follow)
+    gimbal_ctrl.resume()
     
     tools.timer_ctrl(rm_define.timer_reset)
     
@@ -466,6 +470,7 @@ def detect_and_shoot_person(playerNumber):
             chassis_ctrl.set_trans_speed(0.2)
             # Stop robot
             gimbal_ctrl.stop()  # Ensure gimbal stops moving
+            gimbal_ctrl.suspend()  # Ensure gimbal stops moving
             chassis_ctrl.stop()  # Ensure chassis stops moving
             tools.timer_ctrl(rm_define.timer_reset)
             return 0
