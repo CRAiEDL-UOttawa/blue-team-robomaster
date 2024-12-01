@@ -742,7 +742,7 @@ def start():
         # Scan for action
         set_led_color(color, color, "scanning")    
 
-        if gf==0:  # assuming this is part of a larger conditional structure
+        if gf==0:  
             selected_audio = random.choice(gesture_af)
             selected_index = gesture_af.index(selected_audio)
             selected_pose = gesture[selected_index]
