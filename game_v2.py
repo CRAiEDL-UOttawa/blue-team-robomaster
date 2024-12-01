@@ -48,16 +48,12 @@ intro_outro_audios = [rm_define.media_custom_audio_6,rm_define.media_custom_audi
 run_audio = [rm_define.media_custom_audio_2]
 
 simon_says_audio = [rm_define.media_custom_audio_5]
-# Dictionary makes command calls easier
+# Dictionary makes command calls easier 
 actions_dict = {
     'two_clap': rm_define.cond_sound_recognized_applause_twice,
     'three_clap': rm_define.cond_sound_recognized_applause_thrice,
-    'capture': rm_define.cond_recognized_pose_capture,
     'hands_up': rm_define.cond_recognized_pose_victory, 
     'hands_down': rm_define.cond_recognized_pose_give_in,
-    2: rm_define.cond_recognized_marker_number_two,
-    3: rm_define.cond_recognized_marker_number_three, 
-    5: rm_define.cond_recognized_marker_number_five
 }       
 
 # Initialize array of players
@@ -646,6 +642,8 @@ def outro():
             drift_indefinitely()
             gimbal_ctrl.stop()  # Ensure gimbal stops moving
             chassis_ctrl.stop() 
+            time.sleep(2)
+            set_led_color("orange", "magenta", "off")
 
 def start():
     #(INTRO ADDED YESTERDAY)
