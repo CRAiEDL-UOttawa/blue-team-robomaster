@@ -321,6 +321,7 @@ def detect_person():
     global pid_PIDyaw       # PID Controller for the gimbal yaw (horizontal - X coord)
     pid_PIDyaw.set_ctrl_params(150,5,8)
     pid_PIDpitch.set_ctrl_params(85,5,3)
+    counter = 0
     # Set error threshold (called the Post) to 0.07
     variable_Post = 0.07
     robot_ctrl.set_mode(rm_define.robot_mode_chassis_follow)
@@ -365,6 +366,14 @@ def detect_person():
             gimbal_ctrl.rotate_with_speed(0,0)
             chassis_ctrl.stop()
             gimbal_ctrl.rotate(rm_define.gimbal_right) 
+            if(counter%2==0):
+                gimbal_ctrl.pitch_ctrl(30) # look up
+                time.sleep(1.5)
+            else:
+                gimbal_ctrl.pitch_ctrl(10) # look down
+                time.sleep(1.5)
+            counter+=1
+                
             
 def detect_and_shoot_person(playerNumber):
         # init variables
