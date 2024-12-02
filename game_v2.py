@@ -366,13 +366,6 @@ def detect_person():
             gimbal_ctrl.rotate_with_speed(0,0)
             chassis_ctrl.stop()
             gimbal_ctrl.rotate(rm_define.gimbal_right) 
-            if(counter%2==0):
-                gimbal_ctrl.pitch_ctrl(30) # look up
-                time.sleep(1.5)
-            else:
-                gimbal_ctrl.pitch_ctrl(10) # look down
-                time.sleep(1.5)
-            counter+=1
                 
             
 def detect_and_shoot_person(playerNumber):
