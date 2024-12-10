@@ -1,3 +1,5 @@
+# Should we remove this?
+
 # Simple script for robot moving in half circle
 # TODO - Have gimbal "scan" in given direction
 

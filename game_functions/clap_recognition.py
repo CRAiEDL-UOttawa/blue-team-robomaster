@@ -1,3 +1,9 @@
+"""
+File: detect_vision_card_upDown.py
+Author: Yasin, Vanisha, Michael
+Date: 10/12/2024
+Description: Script for detecting 3 claps within a time frame
+"""
 # shoot lazer out
 def shoot_one_lazer():
     led_ctrl.gun_led_on()

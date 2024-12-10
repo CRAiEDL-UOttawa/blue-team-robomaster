@@ -1,3 +1,10 @@
+"""
+File: detect_vmarker.py
+Author: Yasin, Vanisha, Michael
+Date: 10/12/2024
+Description: This script detects a vision marker and depending on the detection the robot will produce different actions
+"""
+
 # Game logic for detecting a randomly selected vision marker within a set time range
 # Borrowed logic from 'app_vision_marker.py'
 

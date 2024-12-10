@@ -1,3 +1,9 @@
+"""
+File: detect_obliteration.py
+Author: Yasin, Vanisha, Michael
+Date: 10/12/2024
+Description: This script holds function for rotating the robomaster s1 180 degrees right 
+"""
 
 def turn_180_right():
     robot_ctrl.set_mode(rm_define.robot_mode_gimbal_follow)

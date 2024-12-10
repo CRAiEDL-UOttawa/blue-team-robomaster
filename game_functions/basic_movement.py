@@ -1,3 +1,20 @@
+"""
+File: basic_movement.py
+Author: Yasin, Vanisha, Michael
+Date: 10/12/2024
+Description: This script contains funtions for the robot's basic movement within our game
+
+PACKAGE_CONTENTS
+    drift_once()
+    drift_indefinitely()
+    spin()
+    obliteration_colouring(x1, x2, x3, x4, x5, x6)
+    turn_180_right()
+    turn_90_right()
+    turn_180_left()
+    back_and_forth_pacing()
+"""
+
 # Created functions for basic movements with some added light effects
 
 RGB = {

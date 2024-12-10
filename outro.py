@@ -1,3 +1,20 @@
+"""
+File: outro.py
+Author: Yasin, Vanisha, Michael
+Date: 10/12/2024
+Description: This script contains functions for the "Seargent Says" game outro
+
+PACKAGE_CONTENTS
+    angry_sound(x)
+    scanning_sound(x)
+    attacked_sound(x)
+    shoot_sound(x)
+    shoot_lazer(x)
+    drift_indefinitely()
+    spin()
+    obliteration_colouring(x1, x2, x3, x4, x5, x6)
+"""
+
 # Dictionary of RGB colors
 RGB = {
     "red": [255,0,0],

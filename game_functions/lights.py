@@ -1,3 +1,15 @@
+"""
+File: lights.py
+Author: Yasin, Vanisha, Michael
+Date: 10/12/2024
+Description: This script contains functions for mapping RGB values to the Robomaster S1 LED's
+
+PACKAGE_CONTENTS
+    set_led_color(top_color, bottom_color, effect)
+    set_led_color(rgb_values, effect)
+    set_led_colors_dif(top_rgb, bottom_rgb, effect)
+"""
+
 RGB = {
     "red": [255,0,0],
     "yellow": [255,255,0],

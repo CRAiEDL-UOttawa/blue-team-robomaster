@@ -1,3 +1,13 @@
+"""
+File: shooting.py
+Author: Yasin, Vanisha, Michael
+Date: 10/12/2024
+Description: This script holds function for shooting lazers from the robomaster s1 gimbal 
+
+PACKAGE_CONTENTS
+    shoot_lazer(x)
+    shoot_one_lazer()
+"""
 def shoot_lazer(x): # x -> amount of times you want to shoot
     for count in range(x):
         # turn gun light on

@@ -1,3 +1,10 @@
+"""
+File: game.py
+Author: Yasin, Vanisha, Michael
+Date: 10/12/2024
+Description: This script executes our game "Seargent Says"
+    insert game rules here
+"""
 import random
 
 # Dictionary of RGB colors

@@ -1,3 +1,11 @@
+"""
+File: detect_vision_card_upDown.py
+Author: Yasin, Vanisha, Michael
+Date: 17/11/2024
+Description: This script leverages PID parameters to follow an identified person,
+also leveraged heigh and width variables to stop at a good distance from the identified person.
+In this implementation the robot's gimbal continuously rotates up and down instead of rotating
+"""
 	# init variables
 global variable_X       # Person identified X coordinate
 global variable_Y       # Person identified Y coordinate

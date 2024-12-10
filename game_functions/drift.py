@@ -1,4 +1,13 @@
-# Simple function to have the robot drift
+"""
+File: drift.py
+Author: Yasin, Vanisha, Michael
+Date: 10/12/2024
+Description: This script contains funtions for the robot to perform single or continuous circular drifts
+
+PACKAGE_CONTENTS
+    drift_once()
+    drift_indefinitely()
+"""
 
 variable_V = 0
 variable_W = 0

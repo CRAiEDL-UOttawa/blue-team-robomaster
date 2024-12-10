@@ -1,8 +1,12 @@
-# November 17th, 2024
-# Yasin Vanisha Michael workshopped the previous existing follow_person code
-# Made adjustments to code for better PID params
-# Also leveraged width/height variables for robot to stop at a fairly good distance between identified person
-# Looking to outfit this code using vision markers to test for accuracy...
+## is this file the same as folowpersonV2?
+
+"""
+File: follow_person_shoot_game.py
+Author: Yasin, Vanisha, Michael
+Date: 17/11/2024
+Description: This script leverages PID parameters to follow an identified person,
+also leveraged heigh and width variables to stop at a good distance from the identified person
+"""
 
 pid_PIDpitch = PIDCtrl()
 pid_PIDyaw = PIDCtrl()

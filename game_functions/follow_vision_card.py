@@ -1,3 +1,10 @@
+"""
+File: follow_vision_card.py
+Author: Yasin, Vanisha, Michael
+Date: 17/11/2024
+Description: This script leverages PID parameters to follow an identified vision card
+"""
+
 # November 17th, 2024
 # Yasin Vanisha Michael workshopped the previous existing follow_person code
 # Made adjustments to code for better PID params

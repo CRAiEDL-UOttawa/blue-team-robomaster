@@ -1,3 +1,18 @@
+"""
+File: intro.py
+Author: Yasin, Vanisha, Michael
+Date: 10/12/2024
+Description: This script contains functions for the "Seargent Says" game intro
+
+PACKAGE_CONTENTS   
+    alive_sound(x)
+    turn_90_left()
+    shoot_sound(x)
+    shoot_lazer(x)
+    mercy()
+    intro_placement()
+"""
+
 RGB = {
     "red": [255,0,0],
     "yellow": [255,255,0],

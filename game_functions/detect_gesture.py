@@ -1,3 +1,11 @@
+"""
+File: detect_gesture.py
+Author: Yasin, Vanisha, Michael
+Date: 10/12/2024
+Description: This script contains game logic for detecting a randomly selected gesture within a given time range,
+when gesture is randomly selected, make function call. Borrowed logic from 'clap_recognition.py'
+"""
+
 # Game logic for detecting a randomly selected gesture within a given time range
 # When gesture is randomly selected, make function call
 # Borrowed logic from 'gestures.py' and 'clap_recognition.py'

@@ -1,3 +1,6 @@
+
+# SHould we remove this file??
+
 def detect_obliteration(playerNumber):
         # init variables
     global variable_X       # Person identified X coordinate

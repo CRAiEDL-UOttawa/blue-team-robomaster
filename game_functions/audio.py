@@ -1,3 +1,22 @@
+"""
+File: audio.py
+Author: Yasin, Vanisha, Michael
+Date: 10/12/2024
+Description: This script contains funtions for the robot's basic audios within our game
+
+PACKAGE_CONTENTS
+    countdown_sound(x)
+    scanning_sound(x)
+    attacked_sound(x)
+    shoot_sound(x)
+    success_sound(x)
+    rotate_sound(x)
+    happy_sound(x)
+    waiting_sound_l1(x)
+    waiting_sound_l2(x)
+    waiting_sound_l3(x)
+    angry_sound(x)
+"""
 
 def countdown_sound(x): # x -> amount of times you want the countdown sound to play
     for count in range(x):

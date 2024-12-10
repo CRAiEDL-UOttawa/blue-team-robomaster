@@ -1,3 +1,11 @@
+"""
+File: audio.py
+Author: Yasin, Vanisha, Michael
+Date: 10/12/2024
+Description: This script contains funtions for the robot's basic audios within our game
+This script contains game logic for detecting a randomly selected vision nmarker within a given time range,
+when vision marker is randomly selected, make function call
+"""
 
 import random
 
