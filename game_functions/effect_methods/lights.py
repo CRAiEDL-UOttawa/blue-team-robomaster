@@ -1,3 +1,6 @@
+# Created functions for light effects
+
+# Dictionary of RGB colors
 RGB = {
     "red": [255,0,0],
     "yellow": [255,255,0],
@@ -14,7 +17,7 @@ RGB = {
     "white": [255,255,255]
 }
 
-# using colours defined in dictionary
+# Using colours defined in dictionary to set gimbal and chassis colours
 def set_led_color(top_color, bottom_color, effect):
     # get RGB values for colors
     top_rgb = RGB.get(top_color)
@@ -31,7 +34,7 @@ def set_led_color(top_color, bottom_color, effect):
     led_ctrl.set_bottom_led(rm_define.armor_bottom_all, bottom_rgb[0], bottom_rgb[1], bottom_rgb[2], effect)
 
 
-# using user's 1 array
+# Using user's 1 array (rgb_values) to set gimbal and chassis colours
 def set_led_color(rgb_values, effect):
     # check array has three values
     if len(rgb_values) != 3:
@@ -43,7 +46,7 @@ def set_led_color(rgb_values, effect):
     led_ctrl.set_bottom_led(rm_define.armor_bottom_all, x1, x2, x3, effect)
 
 
-# using user's 2 arrays
+# Using user's 2 arrays (top_rgb, bottom_rgb) to set gimbal and chassis colours
 def set_led_colors_dif(top_rgb, bottom_rgb, effect):
     # check each array has three values
     if len(top_rgb) != 3 or len(bottom_rgb) != 3:

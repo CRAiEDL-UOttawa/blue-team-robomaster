@@ -26,8 +26,7 @@ def start():
     variable_R = 0.3
     variable_W = 180
     variable_V = (variable_W * variable_R) * (3.14 / 180)
-    
-    #drift_once()
-    #drift_indefinitely()
+    drift_once()
+    drift_indefinitely()
 
 start()

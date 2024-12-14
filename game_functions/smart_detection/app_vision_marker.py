@@ -1,4 +1,4 @@
-# Code done to test vision markers
+# Code done to test vision markers and dictionaries to randomize commands
 
 # Dictionary that holds vision marker object and corresponding audio (command that says to pick up corresponding card)
 markers_num_dict = {
@@ -57,7 +57,7 @@ def start():
                 success_sound(1) # Play success sound
                 win = True
              
-            if win == False: # Player did not pick up the right card/any card or 10 seconds are up and right card has not been shown
+            if win == False: # Player did not pick up the right card/any card and 10 seconds are up 
                 # LED light changes to red
                 led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 255, 0, 0, rm_define.effect_always_on)
                 shoot_lazer(5) # Shoot 5 times
