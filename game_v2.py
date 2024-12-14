@@ -17,6 +17,7 @@ RGB = {
     "white": [255,255,255]
 }
 
+# Dictionary of different LED effects
 LED_Effects = {
     'pulsing': 2,
     'scanning': 4,
@@ -25,6 +26,7 @@ LED_Effects = {
     'off': 1
 }
 
+# Initializing our variables (PID variables)
 pid_PIDpitch = PIDCtrl()
 pid_PIDyaw = PIDCtrl()
 list_PersonList = RmList()
@@ -37,17 +39,16 @@ variable_H = 0
 # Arrays of audio files corresponding to specific actions within our game and arrays containing those actions
 claps_af = [rm_define.media_custom_audio_9, rm_define.media_custom_audio_8] 
 claps = ['two_clap', 'three_clap'] 
-
-mercy_audio = [rm_define.media_custom_audio_7]
-
 gesture_af = [rm_define.media_custom_audio_1, rm_define.media_custom_audio_4]
 gesture = ['hands_up', 'hands_down']
 
+# Intro/Outro audio arrays
 intro_outro_audios = [rm_define.media_custom_audio_6,rm_define.media_custom_audio_0,rm_define.media_custom_audio_3]
-
 run_audio = [rm_define.media_custom_audio_2]
-
+mercy_audio = [rm_define.media_custom_audio_7]
 simon_says_audio = [rm_define.media_custom_audio_5]
+
+
 # Dictionary makes command calls easier 
 actions_dict = {
     'two_clap': rm_define.cond_sound_recognized_applause_twice,
@@ -61,21 +62,20 @@ actions_dict = {
 # 0 -> PLAYER DEAD
 players = [1,1,1,1,1]
 
+##### HELPER METHODS #####
+
+# Methods for sound effects
 def shoot_one_lazer():
-    # led_ctrl.gun_led_on()
     ir_blaster_ctrl.fire_once()
-    # led_ctrl.gun_led_off()
     media_ctrl.play_sound(rm_define.media_sound_shoot)
     
 def alive_sound(x): # x -> amount of times you want the sad sound to play
       media_ctrl.play_sound(rm_define.media_sound_solmization_1E)
       media_ctrl.play_sound(rm_define.media_sound_solmization_1B)
-      ## need to make this more evil
 
 def angry_sound(x): # x -> amount of times you want the sad sound to play
       media_ctrl.play_sound(rm_define.media_sound_solmization_1E)
       media_ctrl.play_sound(rm_define.media_sound_solmization_1B)
-      ## need to make this more evil
 
 def l1():
       media_ctrl.play_sound(rm_define.media_sound_solmization_2C, wait_for_complete=True)
@@ -119,11 +119,13 @@ def waiting_sound_l3(x):
         media_ctrl.play_sound(rm_define.media_sound_solmization_1F)
         time.sleep(1.5)
 
+# Movement method (turn 90 degrees to the left)
 def turn_90_left():
     robot_ctrl.set_mode(rm_define.robot_mode_gimbal_follow)
     chassis_ctrl.rotate_with_speed(rm_define.anticlockwise,90)
     time.sleep(1)
 
+# Detect vision marker of player and give them a gesture command 
 def detect_gesture_vmarker(action, simon_says:bool, round_time, mercyCount, isGesture,playerNumber):
     # Set camera exposure to low for better detection
     vision_ctrl.disable_detection(rm_define.vision_detection_marker)
@@ -136,14 +138,14 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time, mercyCount, isGe
     # Get robomaster call from dict
     gestureOrvmarker_cmd = actions_dict.get(action)
     print(gestureOrvmarker_cmd)
+
     # Flag that indicates vision detection
     detected = False
     
-    # timer
+    # Timer starts
     tools.timer_ctrl(rm_define.timer_start)
 
     while tools.timer_current() < round_time:
-        
         
         # If vmarker is detected
         if vision_ctrl.check_condition(gestureOrvmarker_cmd):
@@ -152,14 +154,14 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time, mercyCount, isGe
             
             # If Simon didn't say, player loses
             if simon_says:
-                # led light changes to green
+                # LED light changes to green
                 set_led_color("green", "green", "solid")
                 media_ctrl.play_sound(rm_define.media_sound_recognize_success, wait_for_complete=True)
                 tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
                 vision_ctrl.disable_detection(rm_define.vision_detection_pose)
                 vision_ctrl.enable_detection(rm_define.vision_detection_marker)
 
-                # distance max 1 m
+                # Distance max 3 m
                 vision_ctrl.set_marker_detection_distance(3)
                 return 1
             
@@ -203,7 +205,7 @@ def detect_gesture_vmarker(action, simon_says:bool, round_time, mercyCount, isGe
         tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
         return 1
 
-        # distance max 1 m
+        # Distance max 3 m
         vision_ctrl.set_marker_detection_distance(3)
         tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
     
@@ -268,13 +270,10 @@ def detect_claps(clap, simon_says:bool, round_time, mercyCount, playerNumber):
         media_ctrl.play_sound(rm_define.media_sound_recognize_success, wait_for_complete=True)
         tools.timer_ctrl(rm_define.timer_reset) # Reset Timer
         return 1
-        
-
+    
     tools.timer_ctrl(rm_define.timer_reset)
 
-# TODO - finding best camera settings for identifying things in game area
-
-# using colours defined in dictionary
+# Using colours defined in dictionary to set gimbal and chassis colours
 def set_led_color(top_color, bottom_color, effect):
     # get RGB values for colors
     top_rgb = RGB.get(top_color)
@@ -295,8 +294,7 @@ def set_led_color(top_color, bottom_color, effect):
         led_ctrl.set_top_led(rm_define.armor_top_all, top_rgb[0], top_rgb[1], top_rgb[2], effect_color)
         led_ctrl.set_bottom_led(rm_define.armor_bottom_all, bottom_rgb[0], bottom_rgb[1], bottom_rgb[2], effect_color)
 
-
-# using user's 2 arrays
+# Using user's 2 arrays to set gimbal and chassis colours
 def set_led_colors_dif(top_rgb, bottom_rgb, effect):
     # check each array has three values
     if len(top_rgb) != 3 or len(bottom_rgb) != 3:
@@ -308,7 +306,7 @@ def set_led_colors_dif(top_rgb, bottom_rgb, effect):
     led_ctrl.set_top_led(rm_define.armor_top_all, top_x1, top_x2, top_x3, effect)
     led_ctrl.set_bottom_led(rm_define.armor_bottom_all, bottom_x1, bottom_x2, bottom_x3, effect)
     
-
+# PID detection to detect person with vision marker
 def detect_person():
         # init variables
     global variable_X       # Person identified X coordinate
@@ -361,13 +359,12 @@ def detect_person():
                 return id
         
         # If no person is identified, gimbal will rotate right until an individual is found
-        # TODO - maybe implement a more effective way to search for a person
         else:
             gimbal_ctrl.rotate_with_speed(0,0)
             chassis_ctrl.stop()
             gimbal_ctrl.rotate(rm_define.gimbal_right) 
                 
-            
+ # PID detection to detect person with vision marker and shoot          
 def detect_and_shoot_person(playerNumber):
         # init variables
     global variable_X       # Person identified X coordinate
@@ -399,7 +396,6 @@ def detect_and_shoot_person(playerNumber):
         # Set identified person data to PersonList list
         list_PersonList=RmList(vision_ctrl.get_marker_detection_info())
         print(list_PersonList)
-
 
         if list_PersonList[1] >=1 :
             if playerNumber+11!= list_PersonList[2] and len(list_PersonList)>6:
@@ -450,7 +446,6 @@ def detect_and_shoot_person(playerNumber):
                         media_ctrl.play_sound(rm_define.media_sound_shoot)
 
         # If no person is identified, gimbal will rotate right until an individual is found
-        # TODO - maybe implement a more effective way to search for a person
         else:
             gimbal_ctrl.rotate_with_speed(0,0)
             chassis_ctrl.stop()
@@ -468,6 +463,7 @@ def detect_and_shoot_person(playerNumber):
             tools.timer_ctrl(rm_define.timer_reset)
             return 0
 
+# Detect person with specific vision marker to perform obliteration at the end
 def detect_obliteration(playerNumber):
         # init variables
     global variable_X       # Person identified X coordinate
@@ -545,7 +541,8 @@ def detect_obliteration(playerNumber):
             gimbal_ctrl.rotate_with_speed(0,0)
             chassis_ctrl.stop()
             gimbal_ctrl.rotate(rm_define.gimbal_right)
-           
+
+# Intro method           
 def intro_placement():
         # gimbal follow
         robot_ctrl.set_mode(rm_define.robot_mode_gimbal_follow)
@@ -569,10 +566,7 @@ def intro_placement():
         turn_90_left()
         media_ctrl.play_sound(rm_define.media_sound_solmization_1C)
 
-        # # recenter gimbal
-        # gimbal_ctrl.recenter()
-
-# Play mercy audio
+# Mercy method
 def mercy(playerNumber):
      set_led_color("orange", "magenta", "flashing")
      media_ctrl.play_sound(mercy_audio[0])
@@ -581,9 +575,6 @@ def mercy(playerNumber):
 
 # Outro functions
 def drift_indefinitely():
-    # tools.timer_ctrl(rm_define.timer_reset)
-    # tools.timer_ctrl(rm_define.timer_start)
-    # while tools.timer_current() < 5: 
     chassis_ctrl.set_trans_speed(3.5)
     chassis_ctrl.set_rotate_speed(180)
     chassis_ctrl.move_with_time(0,0.5)
@@ -591,6 +582,7 @@ def drift_indefinitely():
     chassis_ctrl.move_and_rotate(90, rm_define.anticlockwise)
     time.sleep(0.5)
 
+# Spin and go crazy
 def spin():
     robot_ctrl.set_mode(rm_define.robot_mode_free)
     chassis_ctrl.set_rotate_speed(500)
@@ -601,7 +593,7 @@ def spin():
         gimbal_ctrl.rotate(rm_define.gimbal_left)
         gimbal_ctrl.rotate(rm_define.gimbal_right)
 
-# move to lights file as well
+# Colouring for spin when it is going crazy
 def obliteration_colouring(x1, x2, x3, x4, x5, x6):
     c1 = RGB.get(x1)
     c2 = RGB.get(x2)
@@ -617,6 +609,7 @@ def obliteration_colouring(x1, x2, x3, x4, x5, x6):
     led_ctrl.set_bottom_led(rm_define.armor_bottom_left, c5[0], c5[1], c5[2], rm_define.effect_flash) # left chassis
     led_ctrl.set_bottom_led(rm_define.armor_bottom_right, c6[0], c6[1], c6[2], rm_define.effect_flash) # right chassis
 
+# Outro method
 def outro():
     gimbal_ctrl.stop()  # Ensure gimbal stops moving
     chassis_ctrl.stop() 
@@ -648,14 +641,13 @@ def outro():
             set_led_color("orange", "magenta", "off")
 
 def start():
-    #(INTRO ADDED YESTERDAY)
     intro_placement()
     print('game start')
-    # INTRO SCENE
 
     media_ctrl.enable_sound_recognition(rm_define.sound_detection_applause)
     vision_ctrl.enable_detection(rm_define.vision_detection_marker)
-    # distance max 1 m
+    
+    # distance max 3 m
     vision_ctrl.set_marker_detection_distance(3)
     vision_ctrl.enable_detection(rm_define.vision_detection_pose)
     gimbal_ctrl.rotate(rm_define.gimbal_up)
@@ -668,7 +660,7 @@ def start():
     countdown_sound(1)
     l1()
 
-    # mercy flag
+    # Mercy flag
     action_flag = True
     mercy_count = 0
     two = 0 
@@ -728,7 +720,6 @@ def start():
 
 
         if simonSays:
-            
             if level==1:
                 set_led_color("white", "white", "pulsing")
                 media_ctrl.play_sound(simon_says_audio[0], wait_for_complete_flag=True)
