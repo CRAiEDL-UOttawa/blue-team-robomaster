@@ -1,4 +1,3 @@
-
 def countdown_sound(x): # x -> amount of times you want the countdown sound to play
     for count in range(x):
         media_ctrl.play_sound(rm_define.media_sound_count_down, wait_for_complete=True)
@@ -29,17 +28,22 @@ def happy_sound(x): # x -> amount of times you want the happy sound to play
       media_ctrl.play_sound(rm_define.media_sound_solmization_2B)
       media_ctrl.play_sound(rm_define.media_sound_solmization_3C)
 
-# use while waiting for players to do action
-def waiting_sound_l1(x):
-      media_ctrl.play_sound(rm_define.media_sound_solmization_1A)
-
-def waiting_sound_l2(x):
-      media_ctrl.play_sound(rm_define.media_sound_solmization_1GSharp)
-
-def waiting_sound_l3(x):
-      media_ctrl.play_sound(rm_define.media_sound_solmization_1F)
-
 def angry_sound(x): # x -> amount of times you want the sad sound to play
       media_ctrl.play_sound(rm_define.media_sound_solmization_1E)
       media_ctrl.play_sound(rm_define.media_sound_solmization_1B)
-      ## need to make this more evil
+
+# Different level sounds in our game
+def l1():
+      media_ctrl.play_sound(rm_define.media_sound_solmization_2C, wait_for_complete=True)
+      media_ctrl.play_sound(rm_define.media_sound_solmization_2CSharp, wait_for_complete=True)
+      media_ctrl.play_sound(rm_define.media_sound_solmization_2C, wait_for_complete=True)
+
+def l2():
+      media_ctrl.play_sound(rm_define.media_sound_solmization_1G, wait_for_complete=True)
+      media_ctrl.play_sound(rm_define.media_sound_solmization_2CSharp, wait_for_complete=True)
+      media_ctrl.play_sound(rm_define.media_sound_solmization_1G, wait_for_complete=True)
+
+def l3():
+      media_ctrl.play_sound(rm_define.media_sound_solmization_1C, wait_for_complete=True)
+      media_ctrl.play_sound(rm_define.media_sound_solmization_2CSharp, wait_for_complete=True)
+      media_ctrl.play_sound(rm_define.media_sound_solmization_1C, wait_for_complete=True)
