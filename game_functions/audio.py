@@ -1,3 +1,5 @@
+# Created functions for sound effects
+
 def countdown_sound(x): # x -> amount of times you want the countdown sound to play
     for count in range(x):
         media_ctrl.play_sound(rm_define.media_sound_count_down, wait_for_complete=True)

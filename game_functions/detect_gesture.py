@@ -1,6 +1,6 @@
 # Game logic for detecting a randomly selected gesture within a given time range
 # When gesture is randomly selected, make function call
-# Borrowed logic from 'gestures.py' and 'clap_recognition.py'
+# Borrowed logic from 'clap_recognition.py'
 
 gesture_af = ['AUDIO1', 'AUDIO2', 'AUDIO3', 'AUDIO4', 'AUDIO5']
 gesture = ['two_clap', 'three_clap', 'capture', 'hands_up', 'hands_down']

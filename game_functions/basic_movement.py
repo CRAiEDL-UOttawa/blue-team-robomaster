@@ -1,5 +1,6 @@
 # Created functions for basic movements with some added light effects
 
+# Dictionary of RGB colors
 RGB = {
     "red": [255,0,0],
     "yellow": [255,255,0],
@@ -16,10 +17,12 @@ RGB = {
     "white": [255,255,255]
 }
 
+# Method from audio.py
 def shoot_sound(x): # x -> amount of times you want the shooting sound to play
         for count in range(x):
             media_ctrl.play_sound(rm_define.media_sound_shoot, wait_for_complete=True)
 
+# Shoot lazer method
 def shoot_lazer(x): # x -> amount of times you want to shoot
     for count in range(x):
         # turn gun light on
@@ -34,6 +37,7 @@ def shoot_lazer(x): # x -> amount of times you want to shoot
         # play shoot sound once (audio.py)
         shoot_sound(1)
 
+# From lights.py
 def set_led_color(top_color, bottom_color, effect):
     # get RGB values for colors
     top_rgb = RGB.get(top_color)
@@ -49,37 +53,16 @@ def set_led_color(top_color, bottom_color, effect):
     led_ctrl.set_top_led(rm_define.armor_top_all, top_rgb[0], top_rgb[1], top_rgb[2], effect)
     led_ctrl.set_bottom_led(rm_define.armor_bottom_all, bottom_rgb[0], bottom_rgb[1], bottom_rgb[2], effect)
 
+# Make robots spin and 
 def spin():
     robot_ctrl.set_mode(rm_define.robot_mode_free)
     chassis_ctrl.set_rotate_speed(500)
     gimbal_ctrl.set_rotate_speed(150)
-    obliteration_colouring("red", "cyan", "green", "magenta", "purple", "orange")
     chassis_ctrl.rotate(rm_define.clockwise)
     time.sleep(2)
     for count in range(2):
         gimbal_ctrl.rotate(rm_define.gimbal_left)
         gimbal_ctrl.rotate(rm_define.gimbal_right)
-
-# move to lights file as well
-def obliteration_colouring(x1, x2, x3, x4, x5, x6):
-    c1 = RGB.get(x1)
-    c2 = RGB.get(x2)
-    c3 = RGB.get(x3)
-    c4 = RGB.get(x4)
-    c5 = RGB.get(x5)
-    c6 = RGB.get(x6)
-    led_ctrl.set_top_led(rm_define.armor_top_left, c1[0], c1[1], c1[2], rm_define.effect_flash) # left gimbal
-    led_ctrl.set_top_led(rm_define.armor_top_right, c2[0], c2[1], c2[2], rm_define.effect_flash)  # right gimbal
-
-    led_ctrl.set_bottom_led(rm_define.armor_bottom_front, c3[0], c3[1], c3[2], rm_define.effect_flash) # front chassis
-    led_ctrl.set_bottom_led(rm_define.armor_bottom_back, c4[0], c4[1], c4[2], rm_define.effect_flash) # rear chassis
-    led_ctrl.set_bottom_led(rm_define.armor_bottom_left, c5[0], c5[1], c5[2], rm_define.effect_flash) # left chassis
-    led_ctrl.set_bottom_led(rm_define.armor_bottom_right, c6[0], c6[1], c6[2], rm_define.effect_flash) # right chassis
-
-def alive_sound(x): # x -> amount of times you want the sad sound to play
-      media_ctrl.play_sound(rm_define.media_sound_solmization_1E)
-      media_ctrl.play_sound(rm_define.media_sound_solmization_1B)
-      ## need to make this more evil
 
 def turn_180_right():
     robot_ctrl.set_mode(rm_define.robot_mode_gimbal_follow)
@@ -103,13 +86,6 @@ def back_and_forth_pacing():
         chassis_ctrl.set_trans_speed(0.5)
        
         # make robot 'come to life'
-        # set robot pitch
-        gimbal_ctrl.pitch_ctrl(5)
-        alive_sound(1)
-        gimbal_ctrl.pitch_ctrl(0)
-        # add sound effect
-        alive_sound(2)
-        gimbal_ctrl.pitch_ctrl(10)
         set_led_color("magenta", "magenta", rm_define.effect_breath) #check this to fix it
 
         # move into game area
@@ -127,32 +103,25 @@ def back_and_forth_pacing():
         turn_180_left()
         chassis_ctrl.move_with_time(0,3)
 
-        # rotate right and move forward (pathetic existence is over)
+        # rotate right and move forward 
         turn_180_right()
-        set_led_color("red", "red", rm_define.effect_always_on) #check this to fix it
+        set_led_color("red", "red", rm_define.effect_always_on) 
         chassis_ctrl.move_with_time(0,3)
 
-        # only warning pause
         time.sleep(1)
 
-        # rotate left and move forward 
         turn_180_left()
         shoot_lazer(1)
-        media_ctrl.play_sound(rm_define.media_custom_audio_3)
         turn_90_right()
         set_led_color("magenta", "magenta", rm_define.effect_breath)
         chassis_ctrl.move_with_time(0,2)
 
-        # eyes front
         turn_90_right()
-        set_led_color("red", "red", rm_define.effect_always_on) #check this to fix it
+        set_led_color("red", "red", rm_define.effect_always_on) 
         turn_90_right()
-        chassis_ctrl.move_with_time(0,3)
-        # make sure it pointing in the right direction
         
-
 def start():
-    # timer
+    # Start timer
     tools.timer_ctrl(rm_define.timer_start)
     back_and_forth_pacing()
     spin()
