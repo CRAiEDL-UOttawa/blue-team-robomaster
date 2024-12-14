@@ -8,6 +8,7 @@ PACKAGE_CONTENTS
     drift_once()
     drift_indefinitely()
 """
+# Simple function to have the robot drift
 
 variable_V = 0
 variable_W = 0
@@ -35,8 +36,7 @@ def start():
     variable_R = 0.3
     variable_W = 180
     variable_V = (variable_W * variable_R) * (3.14 / 180)
-    
-    #drift_once()
-    #drift_indefinitely()
+    drift_once()
+    drift_indefinitely()
 
 start()

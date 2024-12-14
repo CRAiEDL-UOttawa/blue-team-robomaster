@@ -4,7 +4,6 @@ Author: Yasin, Vanisha, Michael
 Date: 17/11/2024
 Description: This script leverages follows a line and leveraged PID to do so
 """
-
 # Code for following line (currently blue)
 # Needs further testing + Mod
 

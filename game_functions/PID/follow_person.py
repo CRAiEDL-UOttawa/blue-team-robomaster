@@ -4,6 +4,7 @@ Author: Yasin, Vanisha, Michael
 Date: 17/11/2024
 Description: This script leverages PID parameters to follow an identified person
 """
+
 # initialize variables
 pid_PIDpitch = PIDCtrl()    # PID controller for gimbal pitch
 pid_PIDyaw = PIDCtrl()      # PID contorller for gimbal yaw

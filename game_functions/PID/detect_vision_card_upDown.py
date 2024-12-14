@@ -6,7 +6,10 @@ Description: This script leverages PID parameters to follow an identified person
 also leveraged heigh and width variables to stop at a good distance from the identified person.
 In this implementation the robot's gimbal continuously rotates up and down instead of rotating
 """
-	# init variables
+
+# PID detection of vision detection cards
+
+# init variables
 global variable_X       # Person identified X coordinate
 global variable_Y       # Person identified Y coordinate
 global variable_Post    # Error threshold value
@@ -54,7 +57,7 @@ while True:
 			gimbal_ctrl.rotate_with_speed(0, 0)  # Stop gimbal rotation
 			gimbal_ctrl.stop()  # Ensure gimbal stops moving
 			chassis_ctrl.stop()  # Ensure chassis stops moving
-			return id
+			#return id (if this code is in a method)
 	
 	# If no person is identified, gimbal will rotate right until an individual is found
 	# TODO - maybe implement a more effective way to search for a person

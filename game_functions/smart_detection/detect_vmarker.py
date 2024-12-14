@@ -5,15 +5,17 @@ Date: 10/12/2024
 Description: This script detects a vision marker and depending on the detection the robot will produce different actions
 """
 
-# Game logic for detecting a randomly selected vision marker within a set time range
-# Borrowed logic from 'app_vision_marker.py'
 
+# Vision marker audios (index matches corresponding vision marker in vmarker list)
 vmarker_af = ['AUDIO1', 'AUDIO2', 'AUDIO3']
+
+# Vision marker options
 vmarker = [2,3,5]
 
 # Dictionary makes command calls easier
 vmarker_dict = {2:rm_define.cond_recognized_marker_number_two, 3: rm_define.cond_recognized_marker_number_three, 5:rm_define.cond_recognized_marker_number_five}
-        
+
+# Shoot lazer method    
 def shoot_one_lazer():
     led_ctrl.gun_led_on()
     ir_blaster_ctrl.fire_once()
@@ -27,7 +29,7 @@ def detect_vmarker(vmarker, simon_says:bool, round_time):
     # Get robomaster call from dict
     vmarker_cmd = vmarker_dict.get(vmarker)
 
-    # timer
+    # Timer
     tools.timer_ctrl(rm_define.timer_start)
 
     while tools.timer_current() < round_time:
@@ -46,7 +48,6 @@ def detect_vmarker(vmarker, simon_says:bool, round_time):
                 led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 255, 0, 0, rm_define.effect_always_on)
                 shoot_one_lazer()
     
-
         # Timer ended, no vmarker detected
         # Simon didn't say... (win)
         if tools.timer_current() > 10 & (not simon_says):
@@ -56,14 +57,13 @@ def detect_vmarker(vmarker, simon_says:bool, round_time):
         elif tools.timer_current() > 10:
             
             led_ctrl.set_bottom_led(rm_define.armor_bottom_all, 255, 0, 0, rm_define.effect_always_on)
-            # TODO - What occurs when vmarker not detected and simon didn't say
+            # TODO - What occurs when vmarker not detected and simon didn't say (done in final game)
             shoot_one_lazer()
     
+    # Reset timer
     tools.timer_ctrl(rm_define.timer_reset)
 
 def start():
-    #TODO find optimal camera settings for identification in regards to game area
-
     # vision detection enabled
     vision_ctrl.enable_detection(rm_define.vision_detection_marker)
     # max distance 

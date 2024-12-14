@@ -5,12 +5,6 @@ Date: 17/11/2024
 Description: This script leverages PID parameters to follow an identified vision card
 """
 
-# November 17th, 2024
-# Yasin Vanisha Michael workshopped the previous existing follow_person code
-# Made adjustments to code for better PID params
-# Also leveraged width/height variables for robot to stop at a fairly good distance between identified person
-# Looking to outfit this code using vision markers to test for accuracy...
-
 pid_PIDpitch = PIDCtrl()
 pid_PIDyaw = PIDCtrl()
 list_PersonList = RmList()

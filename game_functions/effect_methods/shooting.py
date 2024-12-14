@@ -8,6 +8,7 @@ PACKAGE_CONTENTS
     shoot_lazer(x)
     shoot_one_lazer()
 """
+
 def shoot_lazer(x): # x -> amount of times you want to shoot
     for count in range(x):
         # turn gun light on
